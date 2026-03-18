@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, field_validator
 
 from .clients import ClientDataPayload, ClientDataResponse
 from .interop import ProductAddRequest, ProductAuthzResponse
@@ -27,6 +27,14 @@ class UserCRUDRequest(BaseModel):  # pylint: disable=too-few-public-methods
     uuid: str
     callsign: str
     x509cert: str
+
+    @field_validator("x509cert", mode="before")
+    @classmethod
+    def normalize_cfssl_pem(cls, value: str) -> str:
+        """Accept the CFSSL-style escaped PEM used by the RM product contract."""
+        if isinstance(value, str):
+            return value.replace("\\r", "").replace("\\n", "\n")
+        return value
 
 
 class ProductDescription(BaseModel):  # pylint: disable=too-few-public-methods

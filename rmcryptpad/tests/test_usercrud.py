@@ -73,6 +73,26 @@ async def test_user_created_and_updated_keep_callsign_identity(dbinstance: None)
 
 
 @pytest.mark.asyncio
+async def test_user_created_accepts_cfssl_escaped_certificate_payload(dbinstance: None) -> None:
+    _ = dbinstance
+    app = get_app_no_init()
+    cert_pem = _build_cert_pem("VIRTA-CFSSL")
+    escaped_cert_pem = cert_pem.replace("\n", "\\n")
+
+    with TestClient(app) as client:
+        created = client.post(
+            "/api/v1/users/created",
+            headers=_rm_headers(),
+            json={"uuid": "uuid-cfssl", "callsign": "VIRTA-CFSSL", "x509cert": escaped_cert_pem},
+        )
+
+    assert created.status_code == 200
+
+    user = await User.by_callsign("VIRTA-CFSSL")
+    assert user.cert_pem == cert_pem
+
+
+@pytest.mark.asyncio
 async def test_user_revoked_promoted_and_demoted_update_state(dbinstance: None) -> None:
     _ = dbinstance
     app = get_app_no_init()

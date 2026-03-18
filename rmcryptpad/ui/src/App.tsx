@@ -1,4 +1,9 @@
-import { buildCardDetails, type CryptPadCardData, type CryptPadCardMeta } from "@/lib/metadata";
+import {
+  buildCardDetails,
+  buildLoginUrl,
+  type CryptPadCardData,
+  type CryptPadCardMeta,
+} from "@/lib/metadata";
 import cryptpadMarkUrl from "./assets/cryptpad-mark.svg";
 
 import "./index.css";
@@ -10,6 +15,7 @@ export interface AppProps {
 
 export default function App({ data, meta }: AppProps) {
   const card = buildCardDetails(meta);
+  const loginUrl = buildLoginUrl(data.url);
 
   return (
     <main className={`cryptpad-shell theme-${card.theme}`} data-theme={card.theme}>
@@ -43,7 +49,7 @@ export default function App({ data, meta }: AppProps) {
         </dl>
 
         <div className="cryptpad-card__actions">
-          <a className="cryptpad-card__button" href={data.url}>
+          <a className="cryptpad-card__button" href={loginUrl}>
             Open CryptPad
           </a>
         </div>

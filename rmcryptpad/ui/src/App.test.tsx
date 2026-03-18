@@ -30,6 +30,6 @@ test("renders an open button for CryptPad", () => {
   );
   expect(screen.getByRole("link", { name: /open cryptpad/i })).toHaveAttribute(
     "href",
-    "https://mtls.cryptpad.example.invalid",
+    "https://mtls.cryptpad.example.invalid/login/",
   );
 });

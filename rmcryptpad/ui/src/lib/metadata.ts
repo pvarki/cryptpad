@@ -25,3 +25,11 @@ export function buildCardDetails(meta: CryptPadCardMeta): CryptPadCardDetails {
     theme: normalizeTheme(meta.theme),
   };
 }
+
+export function buildLoginUrl(url: string): string {
+  try {
+    return new URL("/login/", url).toString();
+  } catch {
+    return `${url.replace(/\/+$/, "")}/login/`;
+  }
+}
