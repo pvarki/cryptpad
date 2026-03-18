@@ -13,6 +13,8 @@ docker compose ps
 docker compose logs --no-color cryptpad
 curl --cacert volumes/nginx/certs/cryptpad.local.pem -I https://cryptpad.localhost:8443
 curl --cacert volumes/nginx/certs/cryptpad.local.pem -I https://sandbox.cryptpad.localhost:8443
+curl --cacert volumes/nginx/certs/cryptpad.local.pem https://rmcryptpad.localhost:8443/.well-known/openid-configuration
+curl --cacert volumes/nginx/certs/cryptpad.local.pem -I https://rmcryptpad.localhost:8443/ui/cryptpad/remoteEntry.js
 curl --cacert volumes/nginx/certs/cryptpad.local.pem -I https://cryptpad.localhost:8443/checkup/
 ```
 
@@ -22,6 +24,7 @@ curl --cacert volumes/nginx/certs/cryptpad.local.pem -I https://cryptpad.localho
 - Local mode uses `https://sandbox.cryptpad.localhost:8443` as the sandbox origin.
 - Nginx terminates TLS and proxies both HTTP traffic and `/cryptpad_websocket`.
 - CryptPad runs in Docker with persistent bind-mounted data directories.
+- `rmcryptpad` runs in Docker with PostgreSQL-backed state and a local OIDC signing-key volume.
 - Local TLS uses a self-signed certificate generated automatically on first start.
 
 ## Current Status
@@ -35,8 +38,9 @@ curl --cacert volumes/nginx/certs/cryptpad.local.pem -I https://cryptpad.localho
 - [x] Capture the onboarding and operator workflow.
 - [x] Approve the Rasenmaeher integration architecture.
 - [x] Write the Rasenmaeher integration implementation plan.
-- [ ] Implement the Rasenmaeher integration sidecar, SSO flow, and product UI.
-- [x] Scaffold the `rmcryptpad` backend package.
+- [x] Implement the Rasenmaeher integration sidecar, SSO flow, and product UI.
+- [x] Wire the local Compose stack to `postgres`, `rmcryptpad`, and the CryptPad SSO plugin.
+- [ ] Wire this repository into the outer `docker-rasenmaeher-integration` stack for full mTLS browser verification.
 
 ## Working Rules
 
@@ -54,10 +58,12 @@ curl --cacert volumes/nginx/certs/cryptpad.local.pem -I https://cryptpad.localho
 
 - `compose.yaml`
 - `config/config.js`
+- `config/sso.js`
 - `customize/application_config.js`
 - `docker/cryptpad/`
 - `docker/nginx/`
 - `docker/scripts/`
+- `rmcryptpad/`
 - `volumes/`
 
 ## Expected Local Workflow
@@ -66,20 +72,24 @@ curl --cacert volumes/nginx/certs/cryptpad.local.pem -I https://cryptpad.localho
 2. Open `https://cryptpad.localhost:8443`.
 3. Accept the local certificate warning.
 4. Check `docker compose logs cryptpad` for the onboarding URL.
-5. Visit `https://cryptpad.localhost:8443/checkup/` after startup.
+5. Verify `https://rmcryptpad.localhost:8443/.well-known/openid-configuration`.
+6. Visit `https://cryptpad.localhost:8443/checkup/` after startup.
 
 ## Verified State
 
 - `docker compose config` passes.
 - `docker compose up -d --build` succeeds.
-- `docker compose ps` shows `cryptpad` healthy and `nginx` running.
+- `docker compose ps` shows `postgres`, `rmcryptpad`, and `cryptpad` healthy, with `nginx` running.
 - `curl -kI https://cryptpad.localhost:8443` returns `HTTP/2 200`.
 - `curl -kI https://sandbox.cryptpad.localhost:8443` returns `HTTP/2 200`.
 - `curl --cacert volumes/nginx/certs/cryptpad.local.pem -I https://cryptpad.localhost:8443` succeeds.
 - `curl --cacert volumes/nginx/certs/cryptpad.local.pem -I https://sandbox.cryptpad.localhost:8443` succeeds.
+- `curl --cacert volumes/nginx/certs/cryptpad.local.pem https://rmcryptpad.localhost:8443/.well-known/openid-configuration` returns `HTTP/2 200`.
+- `curl --cacert volumes/nginx/certs/cryptpad.local.pem -I https://rmcryptpad.localhost:8443/ui/cryptpad/remoteEntry.js` returns `HTTP/2 200`.
 - The generated certificate contains both SANs:
   - `DNS:cryptpad.localhost`
   - `DNS:sandbox.cryptpad.localhost`
+  - `DNS:rmcryptpad.localhost`
 - `curl -kI https://cryptpad.localhost:8443/checkup/` returns `HTTP/2 200`.
 
 ## Onboarding URL
@@ -96,7 +106,9 @@ docker compose logs cryptpad
 - Browsers will warn about the certificate until you accept it or trust the local cert manually.
 - With the self-signed local setup, you may need to open both `https://cryptpad.localhost:8443` and `https://sandbox.cryptpad.localhost:8443` directly once so the browser accepts the certificate on both origins before signup and editor flows work reliably.
 - The local setup records your host UID/GID in `.env` and runs the CryptPad container with that identity so the bind-mounted data stays host-accessible.
+- The local setup also runs `postgres` and `rmcryptpad` with that identity so the sidecar OIDC key material and Postgres data stay in bind mounts under `volumes/`.
 - The stack publishes only `8443` on the host. Internal CryptPad ports `3000` and `3003` stay on the Docker network.
+- Repo-local verification proves product services and wiring. Full browser mTLS validation belongs to the local-only integration branch in `/home/elderx/dev/docker-rasenmaeher-integration`.
 
 ## Troubleshooting
 
@@ -106,4 +118,4 @@ docker compose logs cryptpad
 
 ## Next Step
 
-Execute `docs/plans/2026-03-18-cryptpad-rasenmaeher-integration.md`, then wire this repository into the larger composition as a submodule for full-stack local testing.
+Use the local-only `cryptpad-development` branch in `/home/elderx/dev/docker-rasenmaeher-integration` to point the outer stack at this repository and verify the browser mTLS flow end to end.

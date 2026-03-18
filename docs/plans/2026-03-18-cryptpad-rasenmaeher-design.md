@@ -164,7 +164,7 @@ There are two local phases:
 
 1. Standalone product-local testing in this repository
 - bring up CryptPad, `cryptpad-nginx`, and `rmcryptpad`
-- verify local SSO flow against the sidecar
+- verify product services, OIDC discovery, SSO image wiring, UI asset delivery, and local runtime health
 
 2. Full-stack local testing through `docker-rasenmaeher-integration`
 - consume this repository as a submodule on the local-only `cryptpad-development` branch
