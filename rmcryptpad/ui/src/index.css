@@ -1,0 +1,173 @@
+:root {
+  color-scheme: dark;
+  font-family:
+    Inter, "SF Pro Display", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont,
+    sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  --cp-bg: #07111c;
+  --cp-bg-soft: rgba(15, 23, 42, 0.72);
+  --cp-surface: rgba(7, 17, 28, 0.88);
+  --cp-surface-border: rgba(148, 163, 184, 0.18);
+  --cp-text: #ecf6f7;
+  --cp-muted: #9eb3c6;
+  --cp-accent: #6fe3ba;
+  --cp-accent-strong: #2dd4bf;
+  --cp-shadow: 0 28px 80px rgba(3, 10, 17, 0.45);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(45, 212, 191, 0.18), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(110, 227, 186, 0.12), transparent 24%),
+    linear-gradient(180deg, #040b13 0%, var(--cp-bg) 100%);
+  color: var(--cp-text);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.cryptpad-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 32px 20px;
+}
+
+.theme-light {
+  --cp-bg: #f5f7fb;
+  --cp-bg-soft: rgba(255, 255, 255, 0.84);
+  --cp-surface: rgba(255, 255, 255, 0.9);
+  --cp-surface-border: rgba(15, 23, 42, 0.1);
+  --cp-text: #0f172a;
+  --cp-muted: #4b5b70;
+  --cp-accent: #0f766e;
+  --cp-accent-strong: #115e59;
+  --cp-shadow: 0 30px 90px rgba(15, 23, 42, 0.14);
+  background:
+    radial-gradient(circle at top left, rgba(45, 212, 191, 0.16), transparent 28%),
+    linear-gradient(180deg, #ffffff 0%, #eff6f8 100%);
+}
+
+.cryptpad-card {
+  width: min(100%, 560px);
+  border-radius: 28px;
+  padding: 28px;
+  border: 1px solid var(--cp-surface-border);
+  background: linear-gradient(180deg, var(--cp-bg-soft) 0%, var(--cp-surface) 100%);
+  box-shadow: var(--cp-shadow);
+  backdrop-filter: blur(20px);
+}
+
+.cryptpad-card__header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.cryptpad-card__mark {
+  width: 52px;
+  height: 52px;
+  flex: 0 0 auto;
+}
+
+.cryptpad-card__eyebrow {
+  margin: 0 0 4px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  color: var(--cp-muted);
+}
+
+.cryptpad-card__brand h1 {
+  margin: 0;
+  font-size: clamp(1.9rem, 3vw, 2.5rem);
+  line-height: 1.05;
+}
+
+.cryptpad-card__lead {
+  margin: 18px 0 0;
+  color: var(--cp-muted);
+  font-size: 1rem;
+  max-width: 42ch;
+}
+
+.cryptpad-card__details {
+  display: grid;
+  gap: 14px;
+  margin: 24px 0 0;
+}
+
+.cryptpad-card__details div {
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(148, 163, 184, 0.08);
+  border: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+.cryptpad-card__details dt {
+  margin: 0 0 4px;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cp-muted);
+}
+
+.cryptpad-card__details dd {
+  margin: 0;
+  font-size: 0.95rem;
+  word-break: break-word;
+}
+
+.cryptpad-card__actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: 24px;
+}
+
+.cryptpad-card__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 20px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--cp-accent) 0%, var(--cp-accent-strong) 100%);
+  color: #041018;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  box-shadow: 0 18px 34px rgba(45, 212, 191, 0.2);
+}
+
+.cryptpad-card__button:hover {
+  filter: brightness(1.02);
+}
+
+@media (max-width: 520px) {
+  .cryptpad-card {
+    padding: 22px;
+    border-radius: 22px;
+  }
+
+  .cryptpad-card__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
