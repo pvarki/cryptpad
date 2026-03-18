@@ -39,6 +39,12 @@ curl --cacert volumes/nginx/certs/cryptpad.local.pem -I https://cryptpad.localho
 - Keep this file updated whenever the setup, commands, or verification status changes.
 - Keep the stack aligned with the official install guidance where practical.
 - Favor pinned slim images, non-root runtime where possible, and internal-only service exposure.
+- Keep CryptPad implementation and future integration work in this repository, not in the `docker-rasenmaeher-integration` repository.
+
+## Repository Status
+
+- Source repository: `git@github.com:pvarki/cryptpad.git`
+- Current local-stack baseline is published on branch `main`.
 
 ## Planned File Layout
 
