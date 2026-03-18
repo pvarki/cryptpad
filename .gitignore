@@ -1,5 +1,9 @@
 .env
-volumes/
+volumes/*
+!volumes/postgres/
+!volumes/postgres/.gitkeep
+!volumes/rmcryptpad/
+!volumes/rmcryptpad/.gitkeep
 .worktrees/
 __pycache__/
 *.pyc

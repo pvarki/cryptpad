@@ -7,6 +7,7 @@ import logging
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 
 from .. import __version__
 from ..config import RMCryptPadSettings
@@ -41,6 +42,11 @@ def get_app_no_init() -> FastAPI:
         title="RM CryptPad integration API",
         lifespan=app_lifespan,
         version=__version__,
+    )
+    app.mount(
+        "/ui/cryptpad",
+        StaticFiles(directory=RMCryptPadSettings.singleton().ui_dir, check_dir=False),
+        name="cryptpad-ui",
     )
     app.include_router(healthrouter, prefix="/api/v1", tags=["health"])
     app.include_router(crudrouter, prefix="/api/v1/users", tags=["users"])

@@ -53,6 +53,7 @@ class RMCryptPadSettings(BaseSettings):
     public_url: str = "https://cryptpad.localhost:8443"
     public_sandbox_url: str = "https://sandbox.cryptpad.localhost:8443"
     docs_url: str = "https://docs.cryptpad.org/en/admin_guide/installation.html"
+    ui_dir: str = "/opt/ui/cryptpad"
     oidc_issuer: str = "https://rmcryptpad.localhost:8443"
     oidc_key_dir: str = "/data/oidc"
     oidc_client_id: str = "cryptpad"
