@@ -36,7 +36,7 @@ curl --cacert volumes/nginx/certs/cryptpad.local.pem -I https://cryptpad.localho
 - [x] Approve the Rasenmaeher integration architecture.
 - [x] Write the Rasenmaeher integration implementation plan.
 - [ ] Implement the Rasenmaeher integration sidecar, SSO flow, and product UI.
-- [ ] Scaffold the `rmcryptpad` backend package.
+- [x] Scaffold the `rmcryptpad` backend package.
 
 ## Working Rules
 

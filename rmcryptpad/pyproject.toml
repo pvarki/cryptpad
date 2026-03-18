@@ -6,6 +6,9 @@ authors = ["ElderX <elderx@example.com>"]
 readme = "README.md"
 packages = [{ include = "rmcryptpad", from = "src" }]
 
+[tool.poetry.scripts]
+rmcryptpad = "rmcryptpad.console:rmcryptpad_cli"
+
 [tool.poetry.dependencies]
 python = "^3.11"
 fastapi = ">=0.115,<1.0"

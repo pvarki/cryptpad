@@ -2,18 +2,20 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 from typing import ClassVar, Optional
 
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
-@dataclass(slots=True)
-class RMCryptPadSettings:
+
+class RMCryptPadSettings(BaseSettings):
     """Runtime settings for rmcryptpad."""
 
     rmcn: str = "rasenmaeher"
     public_url: str = "https://cryptpad.localhost:8443"
     public_sandbox_url: str = "https://sandbox.cryptpad.localhost:8443"
     oidc_issuer: str = "https://rmcryptpad.localhost:8443"
+
+    model_config = SettingsConfigDict(env_prefix="RMCRYPTPAD_", extra="ignore")
 
     _singleton: ClassVar[Optional["RMCryptPadSettings"]] = None
 

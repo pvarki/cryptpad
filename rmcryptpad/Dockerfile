@@ -10,9 +10,9 @@ COPY src /app/src
 COPY docker /app/docker
 
 RUN useradd --create-home --shell /usr/sbin/nologin --uid 4001 rmcryptpad \
-    && pip install --no-cache-dir fastapi pydantic pydantic-settings uvicorn
+    && pip install --no-cache-dir .
 
 USER rmcryptpad
 
 ENTRYPOINT ["/app/docker/entrypoint.sh"]
-CMD ["python", "-m", "rmcryptpad.console"]
+CMD ["rmcryptpad"]
