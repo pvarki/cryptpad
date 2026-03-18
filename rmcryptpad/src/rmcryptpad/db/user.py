@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 import datetime
-import hashlib
 from typing import AsyncGenerator, Self
 
+from cryptography import x509
+from cryptography.hazmat.primitives import hashes
 from sqlmodel import Field, select
 
 from .base import ORMBaseModel
@@ -15,7 +16,8 @@ from .errors import Deleted, NotFound
 
 def fingerprint_pem(cert_pem: str) -> str:
     """Generate a stable fingerprint for a stored certificate PEM."""
-    return hashlib.sha256(cert_pem.encode("utf-8")).hexdigest()
+    certificate = x509.load_pem_x509_certificate(cert_pem.encode("utf-8"))
+    return certificate.fingerprint(hashes.SHA1()).hex()
 
 
 class User(ORMBaseModel, table=True):
@@ -49,7 +51,7 @@ class User(ORMBaseModel, table=True):
         callsign: str,
         rmuuid: str,
         cert_pem: str,
-        is_rmadmin: bool = False,
+        is_rmadmin: bool | None = None,
     ) -> Self:
         """Upsert a user using callsign as the stable identity key."""
         cert_hash = fingerprint_pem(cert_pem)
@@ -62,13 +64,14 @@ class User(ORMBaseModel, table=True):
                     rmuuid=rmuuid,
                     cert_pem=cert_pem,
                     cert_fingerprint=cert_hash,
-                    is_rmadmin=is_rmadmin,
+                    is_rmadmin=is_rmadmin if is_rmadmin is not None else False,
                 )
             else:
                 obj.rmuuid = rmuuid
                 obj.cert_pem = cert_pem
                 obj.cert_fingerprint = cert_hash
-                obj.is_rmadmin = is_rmadmin
+                if is_rmadmin is not None:
+                    obj.is_rmadmin = is_rmadmin
                 obj.revoked = None
                 obj.deleted = None
             session.add(obj)
@@ -88,4 +91,3 @@ class User(ORMBaseModel, table=True):
                 )
             for result in session.exec(statement):
                 yield result
-

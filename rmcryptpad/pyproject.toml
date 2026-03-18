@@ -11,6 +11,7 @@ rmcryptpad = "rmcryptpad.console:rmcryptpad_cli"
 
 [tool.poetry.dependencies]
 python = "^3.11"
+cryptography = ">=45,<47"
 fastapi = ">=0.115,<1.0"
 filelock = "^3.19"
 pydantic = ">=2.10,<3.0"
