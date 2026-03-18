@@ -11,11 +11,11 @@ from ..db.engine import EngineWrapper
 from ..db.errors import NotFound
 from ..db.user import User
 from ..schema import OperationResultResponse, UserCRUDRequest
-from .security import require_mtls_header, require_rm_caller
+from .security import require_rm_caller, require_verified_mtls_header
 
 LOGGER = logging.getLogger(__name__)
 
-crudrouter = APIRouter(dependencies=[Depends(require_mtls_header)])
+crudrouter = APIRouter(dependencies=[Depends(require_verified_mtls_header)])
 
 
 @crudrouter.post("/created", response_model=OperationResultResponse)

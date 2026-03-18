@@ -6,10 +6,10 @@ from fastapi import APIRouter, Depends, Request
 
 from ..config import RMCryptPadSettings
 from ..schema import ProductComponent, ProductDescription, ProductDescriptionExtended
-from .security import require_mtls_header, require_rm_caller
+from .security import require_rm_caller, require_verified_mtls_header
 
-router = APIRouter(dependencies=[Depends(require_mtls_header)])
-router_v2 = APIRouter(dependencies=[Depends(require_mtls_header)])
+router = APIRouter(dependencies=[Depends(require_verified_mtls_header)])
+router_v2 = APIRouter(dependencies=[Depends(require_verified_mtls_header)])
 
 
 def _description_text(language: str) -> str:

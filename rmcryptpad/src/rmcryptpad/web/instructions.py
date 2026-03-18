@@ -4,18 +4,16 @@ from __future__ import annotations
 
 from fastapi import APIRouter, Depends, Request
 
-from ..db.user import User
 from ..schema import InstructionsResponse, UserCRUDRequest
-from .security import require_mtls_header, require_rm_caller
+from .security import require_rm_caller, require_verified_mtls_header
 
-router = APIRouter(dependencies=[Depends(require_mtls_header)])
+router = APIRouter(dependencies=[Depends(require_verified_mtls_header)])
 
 
 @router.post("/instructions/{language}", response_model=InstructionsResponse)
 async def user_instructions(user: UserCRUDRequest, request: Request, language: str) -> InstructionsResponse:
     """Return product guidance for the current callsign."""
     require_rm_caller(request)
-    await User.create_or_update(callsign=user.callsign, rmuuid=user.uuid, cert_pem=user.x509cert)
     return InstructionsResponse(
         callsign=user.callsign,
         language=language,

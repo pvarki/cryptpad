@@ -7,9 +7,9 @@ from fastapi import APIRouter, Depends, Request
 from ..db.product import Product
 from ..schema import OperationResultResponse
 from ..schema.interop import ProductAddRequest, ProductAuthzResponse
-from .security import get_client_cn, require_mtls_header, require_rm_caller
+from .security import get_client_cn, require_rm_caller, require_verified_mtls_header
 
-interoprouter = APIRouter(dependencies=[Depends(require_mtls_header)])
+interoprouter = APIRouter(dependencies=[Depends(require_verified_mtls_header)])
 
 
 @interoprouter.post("/add", response_model=OperationResultResponse)

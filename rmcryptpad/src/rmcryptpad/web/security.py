@@ -8,6 +8,8 @@ from ..config import RMCryptPadSettings
 
 CLIENT_DN_HEADER = "X-ClientCert-DN"
 CLIENT_FINGERPRINT_HEADER = "X-SSL-Client-Fingerprint"
+CLIENT_VERIFY_HEADER = "X-SSL-Client-Verify"
+CLIENT_VERIFY_SUCCESS = "SUCCESS"
 
 
 def extract_cn(distinguished_name: str) -> str | None:
@@ -29,11 +31,22 @@ def require_mtls_header(request: Request) -> str:
     return dn
 
 
+def require_verified_mtls_header(request: Request) -> str:
+    """Require a forwarded client certificate DN header and a trusted proxy verification signal."""
+    dn = require_mtls_header(request)
+    if request.headers.get(CLIENT_VERIFY_HEADER) != CLIENT_VERIFY_SUCCESS:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Unverified client certificate")
+    request.state.mtlsverified = True
+    return dn
+
+
 def get_client_cn(request: Request) -> str:
     """Return the forwarded client CN."""
-    dn = require_mtls_header(request)
-    cn = extract_cn(dn)
-    return cn or dn.strip()
+    payload = getattr(request.state, "mtlsdn", None)
+    if payload and payload.get("CN"):
+        return payload["CN"]
+    dn = require_verified_mtls_header(request)
+    return extract_cn(dn) or dn.strip()
 
 
 def require_rm_caller(request: Request) -> None:

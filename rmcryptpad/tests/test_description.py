@@ -4,17 +4,20 @@ from __future__ import annotations
 
 import datetime
 
+import pytest
 from cryptography import x509
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.x509.oid import NameOID
 from fastapi.testclient import TestClient
 
+from rmcryptpad.db.errors import Deleted
+from rmcryptpad.db.user import User
 from rmcryptpad.web.application import get_app_no_init
 
 
 def _rm_headers() -> dict[str, str]:
-    return {"X-ClientCert-DN": "CN=rasenmaeher,O=RM"}
+    return {"X-ClientCert-DN": "CN=rasenmaeher,O=RM", "X-SSL-Client-Verify": "SUCCESS"}
 
 
 def _user_payload(callsign: str) -> dict[str, str]:
@@ -53,16 +56,23 @@ def test_description_routes_return_cryptpad_metadata(dbinstance: None) -> None:
         assert payload["component"]["ref"] == "/ui/cryptpad/remoteEntry.js"
 
 
-def test_instructions_route_returns_product_guidance(dbinstance: None) -> None:
+@pytest.mark.asyncio
+async def test_instructions_route_returns_product_guidance(dbinstance: None) -> None:
     _ = dbinstance
     app = get_app_no_init()
+    payload = _user_payload("VIRTA-1")
 
     with TestClient(app) as client:
-        response = client.post("/api/v1/instructions/en", headers=_rm_headers(), json=_user_payload("VIRTA-1"))
+        assert client.post("/api/v1/users/created", headers=_rm_headers(), json=payload).status_code == 200
+        assert client.post("/api/v1/users/revoked", headers=_rm_headers(), json=payload).status_code == 200
+        response = client.post("/api/v1/instructions/en", headers=_rm_headers(), json=payload)
         assert response.status_code == 200
-        payload = response.json()
-        assert payload["language"] == "en"
-        assert payload["instructions"]
+        body = response.json()
+        assert body["language"] == "en"
+        assert body["instructions"]
+
+    with pytest.raises(Deleted):
+        await User.by_callsign("VIRTA-1")
 
 
 def test_healthcheck_is_available(dbinstance: None) -> None:

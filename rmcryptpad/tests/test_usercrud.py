@@ -16,7 +16,7 @@ from rmcryptpad.web.application import get_app_no_init
 
 
 def _rm_headers() -> dict[str, str]:
-    return {"X-ClientCert-DN": "CN=rasenmaeher,O=RM"}
+    return {"X-ClientCert-DN": "CN=rasenmaeher,O=RM", "X-SSL-Client-Verify": "SUCCESS"}
 
 
 def _build_cert_pem(common_name: str) -> str:
@@ -120,3 +120,21 @@ async def test_user_revoked_promoted_and_demoted_update_state(dbinstance: None) 
     revoked = await User.by_callsign("VIRTA-ADMIN", allow_inactive=True)
     assert revoked.is_rmadmin is False
     assert revoked.revoked is not None
+
+
+@pytest.mark.asyncio
+async def test_wrong_rm_cn_is_forbidden_on_rm_only_routes(dbinstance: None) -> None:
+    _ = dbinstance
+    app = get_app_no_init()
+
+    with TestClient(app) as client:
+        response = client.post(
+            "/api/v1/users/created",
+            headers={"X-ClientCert-DN": "CN=not-rasenmaeher,O=RM", "X-SSL-Client-Verify": "SUCCESS"},
+            json={
+                "uuid": "uuid-bad",
+                "callsign": "VIRTA-BAD",
+                "x509cert": _build_cert_pem("VIRTA-BAD"),
+            },
+        )
+        assert response.status_code == 403

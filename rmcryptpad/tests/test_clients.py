@@ -4,17 +4,20 @@ from __future__ import annotations
 
 import datetime
 
+import pytest
 from cryptography import x509
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.x509.oid import NameOID
 from fastapi.testclient import TestClient
 
+from rmcryptpad.db.errors import Deleted
+from rmcryptpad.db.user import User
 from rmcryptpad.web.application import get_app_no_init
 
 
 def _rm_headers() -> dict[str, str]:
-    return {"X-ClientCert-DN": "CN=rasenmaeher,O=RM"}
+    return {"X-ClientCert-DN": "CN=rasenmaeher,O=RM", "X-SSL-Client-Verify": "SUCCESS"}
 
 
 def _user_payload(callsign: str) -> dict[str, str]:
@@ -50,3 +53,30 @@ def test_client_data_routes_return_settings_urls(dbinstance: None) -> None:
             assert payload["sandbox_url"] == "https://sandbox.cryptpad.localhost:8443"
             assert payload["docs_url"]
             assert payload["oidc_issuer"] == "https://rmcryptpad.localhost:8443"
+
+
+@pytest.mark.asyncio
+async def test_revoked_user_stays_revoked_after_client_data_access(dbinstance: None) -> None:
+    _ = dbinstance
+    app = get_app_no_init()
+
+    with TestClient(app) as client:
+        client.post(
+            "/api/v1/users/created",
+            headers=_rm_headers(),
+            json=_user_payload("VIRTA-REVOKED"),
+        )
+        client.post(
+            "/api/v1/users/revoked",
+            headers=_rm_headers(),
+            json=_user_payload("VIRTA-REVOKED"),
+        )
+        response = client.post(
+            "/api/v2/clients/data",
+            headers=_rm_headers(),
+            json=_user_payload("VIRTA-REVOKED"),
+        )
+        assert response.status_code == 200
+
+    with pytest.raises(Deleted):
+        await User.by_callsign("VIRTA-REVOKED")

@@ -10,11 +10,11 @@ from rmcryptpad.web.application import get_app_no_init
 
 
 def _rm_headers() -> dict[str, str]:
-    return {"X-ClientCert-DN": "CN=rasenmaeher,O=RM"}
+    return {"X-ClientCert-DN": "CN=rasenmaeher,O=RM", "X-SSL-Client-Verify": "SUCCESS"}
 
 
 def _product_headers(certcn: str) -> dict[str, str]:
-    return {"X-ClientCert-DN": f"CN={certcn},O=RM"}
+    return {"X-ClientCert-DN": f"CN={certcn},O=RM", "X-SSL-Client-Verify": "SUCCESS"}
 
 
 @pytest.mark.asyncio
