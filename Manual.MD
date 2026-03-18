@@ -34,6 +34,7 @@ curl --cacert volumes/nginx/certs/cryptpad.local.pem -I https://cryptpad.localho
 - [x] Verify HTTPS, proxying, and CryptPad startup.
 - [x] Capture the onboarding and operator workflow.
 - [x] Approve the Rasenmaeher integration architecture.
+- [x] Write the Rasenmaeher integration implementation plan.
 - [ ] Implement the Rasenmaeher integration sidecar, SSO flow, and product UI.
 
 ## Working Rules
@@ -104,4 +105,4 @@ docker compose logs cryptpad
 
 ## Next Step
 
-Implement the Rasenmaeher integration in this repository, then wire this repository into the larger composition as a submodule for full-stack local testing.
+Execute `docs/plans/2026-03-18-cryptpad-rasenmaeher-integration.md`, then wire this repository into the larger composition as a submodule for full-stack local testing.
