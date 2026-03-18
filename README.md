@@ -15,6 +15,8 @@ The local stack includes:
 
 The stack generates a self-signed local certificate on first boot.
 
+If you are upgrading an older local checkout from the earlier two-host setup, delete `volumes/nginx/certs/cryptpad.local.pem` and `volumes/nginx/certs/cryptpad.local-key.pem` once before restarting so the regenerated cert includes `rmcryptpad.localhost`.
+
 ## Start
 
 ```bash

@@ -103,6 +103,7 @@ docker compose logs cryptpad
 ## Known Local Notes
 
 - The stack uses a self-signed certificate generated automatically into `volumes/nginx/certs/`.
+- If you are upgrading an older checkout from the earlier two-host local stack, delete `volumes/nginx/certs/cryptpad.local.pem` and `volumes/nginx/certs/cryptpad.local-key.pem` once before restarting so the regenerated cert includes `rmcryptpad.localhost`.
 - Browsers will warn about the certificate until you accept it or trust the local cert manually.
 - With the self-signed local setup, you may need to open both `https://cryptpad.localhost:8443` and `https://sandbox.cryptpad.localhost:8443` directly once so the browser accepts the certificate on both origins before signup and editor flows work reliably.
 - The local setup records your host UID/GID in `.env` and runs the CryptPad container with that identity so the bind-mounted data stays host-accessible.
