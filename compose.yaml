@@ -1,0 +1,92 @@
+services:
+  perm-init:
+    image: alpine:3.21@sha256:c3f8e73fdb79deaebaa2037150150191b9dcbfba68b4a46d70103204c53f4709
+    user: "0:0"
+    command: ["/bin/sh", "/scripts/prepare-bind-mounts.sh"]
+    environment:
+      CPAD_UID: ${CPAD_UID:-4001}
+      CPAD_GID: ${CPAD_GID:-4001}
+    volumes:
+      - ./docker/scripts/prepare-bind-mounts.sh:/scripts/prepare-bind-mounts.sh:ro
+      - ./volumes:/work/volumes
+    restart: "no"
+
+  cryptpad:
+    build:
+      context: .
+      dockerfile: docker/cryptpad/Dockerfile
+      args:
+        CRYPTPAD_VERSION: ${CRYPTPAD_VERSION:-2025.9.0}
+        NODE_IMAGE: ${CRYPTPAD_NODE_IMAGE:-node:22-bookworm-slim@sha256:4f77a690f2f8946ab16fe1e791a3ac0667ae1c3575c3e4d0d4589e9ed5bfaf3d}
+    image: local/cryptpad:${CRYPTPAD_VERSION:-2025.9.0}
+    depends_on:
+      perm-init:
+        condition: service_completed_successfully
+    user: "${CPAD_UID:-4001}:${CPAD_GID:-4001}"
+    environment:
+      CPAD_MAIN_DOMAIN: ${CPAD_MAIN_DOMAIN:-https://cryptpad.localhost:8443}
+      CPAD_SANDBOX_DOMAIN: ${CPAD_SANDBOX_DOMAIN:-https://sandbox.cryptpad.localhost:8443}
+      CPAD_CONF: /cryptpad/config/config.js
+      HOME: /tmp
+    volumes:
+      - ./volumes/cryptpad/blob:/cryptpad/blob
+      - ./volumes/cryptpad/block:/cryptpad/block
+      - ./volumes/cryptpad/data:/cryptpad/data
+      - ./volumes/cryptpad/files:/cryptpad/datastore
+      - ./config/config.js:/cryptpad/config/config.js:ro
+      - ./customize/application_config.js:/cryptpad/customize/application_config.js:ro
+    expose:
+      - "3000"
+      - "3003"
+    init: true
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('http').get('http://127.0.0.1:3000', (res) => process.exit(res.statusCode >= 200 && res.statusCode < 500 ? 0 : 1)).on('error', () => process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 10
+      start_period: 90s
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /tmp
+    networks:
+      - cryptpad
+
+  nginx:
+    build:
+      context: .
+      dockerfile: docker/nginx/Dockerfile
+      args:
+        NGINX_IMAGE: ${CRYPTPAD_NGINX_IMAGE:-nginx:1.28-alpine@sha256:5b4900b042ccfa8b0a73df622c3a60f2322faeb2be800cbee5aa7b44d241649e}
+    image: local/cryptpad-nginx:latest
+    depends_on:
+      cryptpad:
+        condition: service_healthy
+    environment:
+      CRYPTPAD_MAIN_HOST: ${CRYPTPAD_MAIN_HOST:-cryptpad.localhost}
+      CRYPTPAD_SANDBOX_HOST: ${CRYPTPAD_SANDBOX_HOST:-sandbox.cryptpad.localhost}
+    ports:
+      - "${CPAD_HTTPS_PORT:-8443}:443"
+    volumes:
+      - ./volumes/nginx/certs:/etc/nginx/certs
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/cache/nginx
+      - /var/run
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - cryptpad
+
+networks:
+  cryptpad:
+    driver: bridge
