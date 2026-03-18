@@ -7,7 +7,10 @@ module.exports = {
     {
       name: process.env.CPAD_SSO_NAME || 'rmcryptpad',
       type: 'oidc',
-      url: process.env.CPAD_SSO_ISSUER || 'https://rmcryptpad.localhost:8443',
+      url:
+        process.env.CPAD_SSO_DISCOVERY_URL ||
+        process.env.CPAD_SSO_ISSUER ||
+        'https://rmcryptpad.localhost:8443',
       client_id: process.env.CPAD_SSO_CLIENT_ID || 'cryptpad',
       client_secret: process.env.CPAD_SSO_CLIENT_SECRET || 'change-me',
       username_claim: 'preferred_username',
