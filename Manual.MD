@@ -40,7 +40,7 @@ curl --cacert volumes/nginx/certs/cryptpad.local.pem -I https://cryptpad.localho
 - [x] Write the Rasenmaeher integration implementation plan.
 - [x] Implement the Rasenmaeher integration sidecar, SSO flow, and product UI.
 - [x] Wire the local Compose stack to `postgres`, `rmcryptpad`, and the CryptPad SSO plugin.
-- [ ] Wire this repository into the outer `docker-rasenmaeher-integration` stack for full mTLS browser verification.
+- [x] Wire this repository into the outer `docker-rasenmaeher-integration` stack for full mTLS browser verification.
 
 ## Working Rules
 
@@ -110,13 +110,15 @@ docker compose logs cryptpad
 - The local setup also runs `postgres` and `rmcryptpad` with that identity so the sidecar OIDC key material and Postgres data stay in bind mounts under `volumes/`.
 - The stack publishes only `8443` on the host. Internal CryptPad ports `3000` and `3003` stay on the Docker network.
 - Repo-local verification proves product services and wiring. Full browser mTLS validation belongs to the local-only integration branch in `/home/elderx/dev/docker-rasenmaeher-integration`.
+- Rasenmaeher sends `x509cert` using the existing CFSSL-style escaped-newline contract, so `rmcryptpad` must normalize `\\n` back to PEM before fingerprinting and storing the user cert.
 
 ## Troubleshooting
 
 - If signup succeeds and then a white page appears, open `https://sandbox.cryptpad.localhost:8443/` directly, accept the certificate there too, then refresh the main site.
 - If rich text shows browser-console errors but the server logs show `200` for `/pad/ckeditor-inner.html`, `/common/testworker.js`, and `/common/worker.bundle.min.js`, test again in a clean browser profile or incognito window with extensions disabled.
 - `contentInt.js` console messages are not part of the CryptPad codebase in this setup and likely come from a browser extension.
+- In the integrated Rasenmaeher stack, the product card must open CryptPad at `/login/`, not `/`, so CryptPad starts the enforced SSO flow instead of dropping the user into guest mode.
 
 ## Next Step
 
-Use the local-only `cryptpad-development` branch in `/home/elderx/dev/docker-rasenmaeher-integration` to point the outer stack at this repository and verify the browser mTLS flow end to end.
+Continue refining the local-only `cryptpad-development` branch in `/home/elderx/dev/docker-rasenmaeher-integration` as the integration baseline for the larger stack.
