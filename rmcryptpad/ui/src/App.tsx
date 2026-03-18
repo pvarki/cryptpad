@@ -1,4 +1,5 @@
 import { buildCardDetails, type CryptPadCardData, type CryptPadCardMeta } from "@/lib/metadata";
+import cryptpadMarkUrl from "./assets/cryptpad-mark.svg";
 
 import "./index.css";
 
@@ -16,7 +17,7 @@ export default function App({ data, meta }: AppProps) {
         <header className="cryptpad-card__header">
           <img
             className="cryptpad-card__mark"
-            src="/cryptpad-mark.svg"
+            src={cryptpadMarkUrl}
             alt=""
             aria-hidden="true"
           />

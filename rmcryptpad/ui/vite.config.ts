@@ -4,10 +4,12 @@ import { federation } from "@module-federation/vite";
 import path from "path";
 import { fileURLToPath } from "url";
 
+import { cryptpadUiBasePath } from "./src/lib/public-path";
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
-  base: "/",
+  base: cryptpadUiBasePath,
   build: {
     target: "chrome89",
     emptyOutDir: true,
