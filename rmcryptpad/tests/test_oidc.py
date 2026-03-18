@@ -17,6 +17,7 @@ from cryptography.x509.oid import NameOID
 from fastapi.testclient import TestClient
 
 from rmcryptpad.config import RMCryptPadSettings
+from rmcryptpad.db.user import fingerprint_pem
 from rmcryptpad.oidc.keys import OIDCKeyManager
 from rmcryptpad.web.application import get_app_no_init
 
@@ -43,6 +44,11 @@ def _rm_headers() -> dict[str, str]:
 
 def _user_headers(callsign: str) -> dict[str, str]:
     return {"X-ClientCert-DN": f"CN={callsign},O=RM", "X-SSL-Client-Verify": "SUCCESS"}
+
+
+def _fingerprint_header(cert_pem: str) -> str:
+    fingerprint = fingerprint_pem(cert_pem)
+    return ":".join(fingerprint[i : i + 2] for i in range(0, len(fingerprint), 2)).upper()
 
 
 def _configure_oidc(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
@@ -150,6 +156,38 @@ def test_authorize_issues_code_for_active_callsign(dbinstance: None, monkeypatch
     assert query["state"] == ["state-a"]
     assert query["code"]
     assert verifier
+
+
+def test_authorize_rejects_mismatched_certificate_fingerprint(dbinstance: None, monkeypatch: pytest.MonkeyPatch, tmp_path) -> None:
+    _ = dbinstance
+    _configure_oidc(monkeypatch, tmp_path)
+    app = get_app_no_init()
+    active_cert = _build_cert_pem("VIRTA-1")
+    wrong_cert = _build_cert_pem("VIRTA-1")
+    _, challenge = _pkce_pair()
+
+    with TestClient(app) as client:
+        assert (
+            client.post("/api/v1/users/created", headers=_rm_headers(), json={"uuid": "uuid-1", "callsign": "VIRTA-1", "x509cert": active_cert}).status_code
+            == 200
+        )
+        response = client.get(
+            "/oidc/authorize",
+            headers={**_user_headers("VIRTA-1"), "X-SSL-Client-Fingerprint": _fingerprint_header(wrong_cert)},
+            params={
+                "client_id": "cryptpad",
+                "redirect_uri": "https://cryptpad.localhost/ssoauth",
+                "response_type": "code",
+                "scope": "openid profile",
+                "code_challenge": challenge,
+                "code_challenge_method": "S256",
+                "nonce": "nonce-a",
+                "state": "state-a",
+            },
+            follow_redirects=False,
+        )
+
+    assert response.status_code == 403
 
 
 def test_authorize_rejects_wrong_callsign(dbinstance: None, monkeypatch: pytest.MonkeyPatch, tmp_path) -> None:

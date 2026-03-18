@@ -21,13 +21,20 @@ def extract_cn(distinguished_name: str) -> str | None:
     return None
 
 
+def normalize_client_fingerprint(fingerprint: str | None) -> str | None:
+    """Normalize forwarded fingerprints to lowercase hex without separators."""
+    if not fingerprint:
+        return None
+    return "".join(character for character in fingerprint if character not in ": \t\r\n").lower()
+
+
 def require_mtls_header(request: Request) -> str:
     """Require a forwarded client certificate DN header."""
     dn = request.headers.get(CLIENT_DN_HEADER)
     if not dn:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Missing client certificate header")
     request.state.mtlsdn = {"DN": dn, "CN": extract_cn(dn) or dn.strip()}
-    request.state.mtlsfingerprint = request.headers.get(CLIENT_FINGERPRINT_HEADER)
+    request.state.mtlsfingerprint = normalize_client_fingerprint(request.headers.get(CLIENT_FINGERPRINT_HEADER))
     return dn
 
 

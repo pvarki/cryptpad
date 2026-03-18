@@ -17,6 +17,7 @@ from ..config import RMCryptPadSettings
 from ..db.errors import Deleted, NotFound
 from ..db.oidc_code import OIDCAuthorizationCode
 from ..db.user import User
+from ..web.security import normalize_client_fingerprint
 from .keys import OIDCKeyManager
 
 
@@ -87,6 +88,9 @@ class OIDCProvider:
             user = await User.by_callsign(cn)
         except (NotFound, Deleted):
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Inactive callsign") from None
+        request_fingerprint = normalize_client_fingerprint(getattr(request.state, "mtlsfingerprint", None))
+        if request_fingerprint and user.cert_fingerprint and request_fingerprint != user.cert_fingerprint:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Certificate fingerprint mismatch")
         params = request.query_params
         if params.get("response_type") != "code":
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Unsupported response_type")
