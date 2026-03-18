@@ -6,7 +6,8 @@ from fastapi import APIRouter, Depends, Request
 
 from ..config import RMCryptPadSettings
 from ..db.user import User
-from ..schema import ClientDataPayload, ClientDataResponse, UserCRUDRequest
+from ..schema import UserCRUDRequest
+from ..schema.clients import ClientDataPayload, ClientDataResponse
 from .security import require_mtls_header, require_rm_caller
 
 router = APIRouter(dependencies=[Depends(require_mtls_header)])

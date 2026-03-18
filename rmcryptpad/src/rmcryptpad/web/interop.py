@@ -5,7 +5,8 @@ from __future__ import annotations
 from fastapi import APIRouter, Depends, Request
 
 from ..db.product import Product
-from ..schema import OperationResultResponse, ProductAddRequest, ProductAuthzResponse
+from ..schema import OperationResultResponse
+from ..schema.interop import ProductAddRequest, ProductAuthzResponse
 from .security import get_client_cn, require_mtls_header, require_rm_caller
 
 interoprouter = APIRouter(dependencies=[Depends(require_mtls_header)])
