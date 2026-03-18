@@ -11,6 +11,7 @@ from fastapi import FastAPI
 from .. import __version__
 from ..config import RMCryptPadSettings
 from ..db.dbinit import init_db
+from ..oidc.keys import OIDCKeyManager
 from .clients import router as clientsrouter
 from .clients import router_admin as clientsrouter_admin
 from .description import router as descriptionsrouter
@@ -18,6 +19,7 @@ from .description import router_v2 as descriptionsrouterv2
 from .health import router as healthrouter
 from .instructions import router as instructionsrouter
 from .interop import interoprouter
+from .oidc import router as oidcrouter
 from .usercrud import crudrouter
 
 LOGGER = logging.getLogger(__name__)
@@ -27,6 +29,7 @@ LOGGER = logging.getLogger(__name__)
 async def app_lifespan(app: FastAPI):
     _ = app
     await asyncio.gather(init_db())
+    OIDCKeyManager.singleton()
     yield None
 
 
@@ -47,6 +50,7 @@ def get_app_no_init() -> FastAPI:
     app.include_router(descriptionsrouterv2, prefix="/api/v2", tags=["description"])
     app.include_router(clientsrouter, prefix="/api/v2", tags=["clients"])
     app.include_router(clientsrouter_admin, prefix="/api/v2", tags=["admin-clients"])
+    app.include_router(oidcrouter, tags=["oidc"])
     return app
 
 

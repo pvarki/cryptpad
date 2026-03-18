@@ -36,6 +36,8 @@ class OIDCAuthorizationCode(ORMBaseModel, table=True):
     client_id: str = Field(index=True)
     redirect_uri: str
     scope: str = "openid profile"
+    code_challenge: str | None = None
+    code_challenge_method: str | None = None
     nonce: str | None = None
     expires_at: datetime.datetime = Field(index=True)
     used_at: datetime.datetime | None = Field(default=None, index=True)
@@ -48,6 +50,8 @@ class OIDCAuthorizationCode(ORMBaseModel, table=True):
         client_id: str,
         redirect_uri: str,
         expires_at: datetime.datetime,
+        code_challenge: str | None = None,
+        code_challenge_method: str | None = None,
         nonce: str | None = None,
         scope: str = "openid profile",
     ) -> str:
@@ -61,6 +65,8 @@ class OIDCAuthorizationCode(ORMBaseModel, table=True):
                 client_id=client_id,
                 redirect_uri=redirect_uri,
                 expires_at=normalized_expires_at,
+                code_challenge=code_challenge,
+                code_challenge_method=code_challenge_method,
                 nonce=nonce,
                 scope=scope,
             )

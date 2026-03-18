@@ -54,6 +54,11 @@ class RMCryptPadSettings(BaseSettings):
     public_sandbox_url: str = "https://sandbox.cryptpad.localhost:8443"
     docs_url: str = "https://docs.cryptpad.org/en/admin_guide/installation.html"
     oidc_issuer: str = "https://rmcryptpad.localhost:8443"
+    oidc_key_dir: str = "/data/oidc"
+    oidc_client_id: str = "cryptpad"
+    oidc_client_secret: str = "cryptpad-secret"
+    oidc_code_ttl_seconds: int = 300
+    oidc_token_ttl_seconds: int = 3600
 
     model_config = SettingsConfigDict(env_prefix="RMCRYPTPAD_", extra="ignore")
 
