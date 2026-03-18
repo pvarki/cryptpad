@@ -112,6 +112,7 @@ docker compose logs cryptpad
 - Repo-local verification proves product services and wiring. Full browser mTLS validation belongs to the local-only integration branch in `/home/elderx/dev/docker-rasenmaeher-integration`.
 - Rasenmaeher sends `x509cert` using the existing CFSSL-style escaped-newline contract, so `rmcryptpad` must normalize `\\n` back to PEM before fingerprinting and storing the user cert.
 - In the integrated stack, CryptPad's server-side OIDC discovery must use the internal `rmcryptpad` service URL, while the discovery document still advertises the public `rmcryptpad.${SERVER_DOMAIN}` issuer for browser redirects.
+- In the integrated stack, CryptPad's server-side OIDC callback exchange hits the public `rmcryptpad.${SERVER_DOMAIN}` HTTPS endpoints, so the CryptPad container must trust the stack TLS roots from both `/ca_public/miniwerk_ca.pem` and `/ca_public/ca_chain.pem`.
 
 ## Troubleshooting
 
