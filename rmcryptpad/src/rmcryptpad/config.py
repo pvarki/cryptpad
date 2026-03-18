@@ -52,6 +52,7 @@ class RMCryptPadSettings(BaseSettings):
     rmcn: str = Field(default="rasenmaeher", description="Expected CN for the Rasenmaeher client certificate")
     public_url: str = "https://cryptpad.localhost:8443"
     public_sandbox_url: str = "https://sandbox.cryptpad.localhost:8443"
+    docs_url: str = "https://docs.cryptpad.org/en/admin_guide/installation.html"
     oidc_issuer: str = "https://rmcryptpad.localhost:8443"
 
     model_config = SettingsConfigDict(env_prefix="RMCRYPTPAD_", extra="ignore")

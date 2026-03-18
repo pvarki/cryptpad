@@ -2,14 +2,32 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
 from .. import __version__
 from ..config import RMCryptPadSettings
+from ..db.dbinit import init_db
+from .clients import router as clientsrouter
+from .clients import router_admin as clientsrouter_admin
+from .description import router as descriptionsrouter
+from .description import router_v2 as descriptionsrouterv2
+from .health import router as healthrouter
+from .instructions import router as instructionsrouter
+from .interop import interoprouter
+from .usercrud import crudrouter
 
 LOGGER = logging.getLogger(__name__)
+
+
+@asynccontextmanager
+async def app_lifespan(app: FastAPI):
+    _ = app
+    await asyncio.gather(init_db())
+    yield None
 
 
 def get_app_no_init() -> FastAPI:
@@ -18,13 +36,17 @@ def get_app_no_init() -> FastAPI:
         docs_url="/api/docs",
         openapi_url="/api/openapi.json",
         title="RM CryptPad integration API",
+        lifespan=app_lifespan,
         version=__version__,
     )
-
-    @app.get("/healthcheck")
-    async def healthcheck() -> dict[str, bool]:
-        return {"healthy": True}
-
+    app.include_router(healthrouter, prefix="/api/v1", tags=["health"])
+    app.include_router(crudrouter, prefix="/api/v1/users", tags=["users"])
+    app.include_router(interoprouter, prefix="/api/v1/interop", tags=["interop"])
+    app.include_router(instructionsrouter, prefix="/api/v1", tags=["instructions"])
+    app.include_router(descriptionsrouter, prefix="/api/v1", tags=["description"])
+    app.include_router(descriptionsrouterv2, prefix="/api/v2", tags=["description"])
+    app.include_router(clientsrouter, prefix="/api/v2", tags=["clients"])
+    app.include_router(clientsrouter_admin, prefix="/api/v2", tags=["admin-clients"])
     return app
 
 
