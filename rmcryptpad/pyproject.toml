@@ -12,12 +12,17 @@ rmcryptpad = "rmcryptpad.console:rmcryptpad_cli"
 [tool.poetry.dependencies]
 python = "^3.11"
 fastapi = ">=0.115,<1.0"
+filelock = "^3.19"
 pydantic = ">=2.10,<3.0"
 pydantic-settings = ">=2.8,<3.0"
+psycopg2-binary = "^2.9"
+sqlmodel = ">=0.0.24,<1.0"
 uvicorn = ">=0.34,<1.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0"
+pytest-asyncio = ">=1.2,<2.0"
+pytest-docker = "^3.2"
 
 [build-system]
 requires = ["poetry-core>=2.1.0"]
