@@ -11,11 +11,6 @@ printf 'CPAD_UID=%s\nCPAD_GID=%s\n' "$(id -u)" "$(id -g)" > .env
 docker compose up -d --build
 docker compose ps
 docker compose logs --no-color cryptpad
-curl --cacert volumes/nginx/certs/cryptpad.local.pem -I https://cryptpad.localhost:8443
-curl --cacert volumes/nginx/certs/cryptpad.local.pem -I https://sandbox.cryptpad.localhost:8443
-curl --cacert volumes/nginx/certs/cryptpad.local.pem https://rmcryptpad.localhost:8443/.well-known/openid-configuration
-curl --cacert volumes/nginx/certs/cryptpad.local.pem -I https://rmcryptpad.localhost:8443/ui/cryptpad/remoteEntry.js
-curl --cacert volumes/nginx/certs/cryptpad.local.pem -I https://cryptpad.localhost:8443/checkup/
 ```
 
 ## Fixed Decisions
@@ -109,6 +104,7 @@ docker compose logs cryptpad
 - The local setup records your host UID/GID in `.env` and runs the CryptPad container with that identity so the bind-mounted data stays host-accessible.
 - The local setup also runs `postgres` and `rmcryptpad` with that identity so the sidecar OIDC key material and Postgres data stay in bind mounts under `volumes/`.
 - The stack publishes only `8443` on the host. Internal CryptPad ports `3000` and `3003` stay on the Docker network.
+- The curl commands in `Verified State` are optional smoke checks, not required installation steps.
 - Repo-local verification proves product services and wiring. Full browser mTLS validation belongs to the local-only integration branch in `/home/elderx/dev/docker-rasenmaeher-integration`.
 - Rasenmaeher sends `x509cert` using the existing CFSSL-style escaped-newline contract, so `rmcryptpad` must normalize `\\n` back to PEM before fingerprinting and storing the user cert.
 - In the integrated stack, CryptPad's server-side OIDC discovery must use the internal `rmcryptpad` service URL, while the discovery document still advertises the public `rmcryptpad.${SERVER_DOMAIN}` issuer for browser redirects.
