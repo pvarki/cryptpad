@@ -1,0 +1,120 @@
+{
+  "home": {
+    "launch": "Launch CryptPad!",
+    "featuresTitle": "How to use CryptPad's features"
+  },
+  "onboarding": {
+    "back": "Back",
+    "clickToEnlarge": "Click to enlarge",
+    "completion": "Onboarding Completed!",
+    "completionDesc": "You're all set to start using CryptPad.",
+    "finish": "Finish",
+    "imageMissing": "Image not available",
+    "next": "Next",
+    "of": "of",
+    "progressSaved": "Your onboarding progress has been saved.",
+    "review": "What is CryptPad?",
+    "step": "Step",
+    "title": "What is CryptPad?",
+    "steps": {
+      "welcome": {
+        "title": "Welcome to CryptPad!",
+        "description": "CryptPad is a secure, end-to-end encrypted collaboration suite integrated into Deploy App. It allows your team to create documents, spreadsheets, presentations, and more — all with zero-knowledge encryption."
+      },
+      "whatIs": {
+        "title": "What is CryptPad?",
+        "description": "CryptPad is an open-source collaborative office suite where all content is encrypted. Unlike traditional cloud services, not even the server can read your data. It supports rich text documents, spreadsheets, kanban boards, presentations, whiteboards, and more."
+      },
+      "signIn": {
+        "title": "Sign In with Deploy App",
+        "description": "CryptPad is integrated with Deploy App's certificate-based authentication. Simply click 'Launch CryptPad!' and you will be automatically authenticated using your Deploy App credentials. No separate account or password is needed."
+      },
+      "dashboard": {
+        "title": "Your CryptPad Dashboard",
+        "description": "After signing in, you'll see your CryptPad dashboard. From here you can create new documents, access your recent files, manage your CryptDrive (file storage), and collaborate with team members."
+      },
+      "createDoc": {
+        "title": "Create Your First Document",
+        "description": "Click the '+' button on your dashboard to create a new pad. Choose from rich text documents, code editors, spreadsheets, kanban boards, presentations, whiteboards, forms, and more. All documents are encrypted automatically."
+      },
+      "share": {
+        "title": "Share with Your Team",
+        "description": "To share a document, click the share button in the toolbar. You can share with specific team members or create a link. Shared documents support real-time collaboration — multiple users can edit simultaneously and see each other's changes instantly."
+      }
+    }
+  },
+  "features": {
+    "docs": {
+      "title": "Write & Share Docs",
+      "steps": {
+        "intro": {
+          "title": "Rich Text Documents",
+          "description": "CryptPad's Rich Text editor lets you create formatted documents with headings, lists, tables, images, and more. Everything is encrypted end-to-end, so only you and your collaborators can read the content."
+        },
+        "create": {
+          "title": "Creating a Document",
+          "description": "From your dashboard, click '+' and select 'Rich Text'. A new encrypted document will be created. Use the toolbar to format text, insert images, create tables, and add other content. Changes are saved automatically."
+        },
+        "collaborate": {
+          "title": "Real-time Collaboration",
+          "description": "Share the document with team members to collaborate in real-time. You'll see other users' cursors and changes as they happen. Use comments to discuss specific parts of the document. All communication is encrypted."
+        },
+        "share": {
+          "title": "Sharing & Access Control",
+          "description": "Click the share button to generate a link. You can set permissions to 'View' (read-only) or 'Edit' (full access). Links can be shared with specific contacts or teams. You can also set an access list to restrict who can open the document."
+        }
+      }
+    },
+    "kanban": {
+      "title": "Task Boards (Kanban)",
+      "steps": {
+        "intro": {
+          "title": "Kanban Task Boards",
+          "description": "CryptPad's Kanban application lets you organize tasks visually using boards, columns, and cards. It's perfect for project management, task tracking, and workflow organization — all with end-to-end encryption."
+        },
+        "create": {
+          "title": "Creating a Kanban Board",
+          "description": "From your dashboard, click '+' and select 'Kanban'. Create columns for your workflow stages (e.g., To Do, In Progress, Done). Add cards to represent tasks, and drag them between columns as work progresses."
+        },
+        "manage": {
+          "title": "Managing Tasks",
+          "description": "Click on any card to add details, labels, or descriptions. Cards can be color-coded for priority. Drag and drop cards between columns to update status. Share the board with your team for collaborative task management."
+        }
+      }
+    },
+    "presentations": {
+      "title": "Presentations",
+      "steps": {
+        "intro": {
+          "title": "Create Presentations",
+          "description": "CryptPad includes a Markdown-based presentation tool that lets you create slide decks quickly. Write your content in Markdown and CryptPad renders it as a professional presentation — all encrypted and collaborative."
+        },
+        "create": {
+          "title": "Building Your Slides",
+          "description": "From the dashboard, click '+' and select 'Slide'. Use Markdown syntax to create slides — separate slides with '---'. Add headings, bullet points, images, and code blocks. The preview updates in real-time as you type."
+        },
+        "present": {
+          "title": "Presenting & Sharing",
+          "description": "Click the 'Present' button to enter fullscreen presentation mode. Navigate slides with arrow keys. Share the presentation link with team members for collaborative editing, or share a read-only link for viewing."
+        }
+      }
+    },
+    "unitUse": {
+      "title": "CryptPad in Unit's Use",
+      "steps": {
+        "intro": {
+          "title": "CryptPad for Your Unit",
+          "description": "CryptPad is deployed as part of your unit's Deploy App environment. All data stays on your infrastructure, encrypted at all times. This makes it ideal for handling sensitive operational documents and planning."
+        },
+        "ops": {
+          "title": "Operational Planning",
+          "description": "Use CryptPad for mission planning documents, shared briefing notes, and collaborative situation reports. Kanban boards work great for tracking tasks across teams. All content is encrypted — even the server administrators cannot read your documents."
+        },
+        "secure": {
+          "title": "Security & Trust",
+          "description": "CryptPad uses zero-knowledge encryption: your data is encrypted in your browser before it reaches the server. Combined with Deploy App's certificate-based authentication, only verified team members can access shared resources. No external dependencies or third-party access."
+        }
+      }
+    }
+  }
+}

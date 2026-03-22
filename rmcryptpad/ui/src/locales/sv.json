@@ -1,0 +1,120 @@
+{
+  "home": {
+    "launch": "Starta CryptPad!",
+    "featuresTitle": "Hur man anvander CryptPads funktioner"
+  },
+  "onboarding": {
+    "back": "Tillbaka",
+    "clickToEnlarge": "Klicka for att forstora",
+    "completion": "Introduktion klar!",
+    "completionDesc": "Du ar redo att borja anvanda CryptPad.",
+    "finish": "Klar",
+    "imageMissing": "Bilden ar inte tillganglig",
+    "next": "Nasta",
+    "of": "av",
+    "progressSaved": "Din introduktionsframsteg har sparats.",
+    "review": "Vad ar CryptPad?",
+    "step": "Steg",
+    "title": "Vad ar CryptPad?",
+    "steps": {
+      "welcome": {
+        "title": "Valkommen till CryptPad!",
+        "description": "CryptPad ar en saker, anda-till-anda-krypterad samarbetssvit integrerad i Deploy App. Den gor det mojligt for ditt team att skapa dokument, kalkylblad, presentationer och mer — allt med nollkunskapskryptering."
+      },
+      "whatIs": {
+        "title": "Vad ar CryptPad?",
+        "description": "CryptPad ar en kontorssvit med oppen kallkod dar allt innehall ar krypterat. Till skillnad fran traditionella molntjanster kan inte ens servern lasa dina data."
+      },
+      "signIn": {
+        "title": "Logga in med Deploy App",
+        "description": "CryptPad ar integrerat med Deploy Apps certifikatbaserade autentisering. Klicka bara pa 'Starta CryptPad!' sa autentiseras du automatiskt."
+      },
+      "dashboard": {
+        "title": "Din CryptPad-instrumentpanel",
+        "description": "Efter inloggning ser du din CryptPad-instrumentpanel. Harfran kan du skapa nya dokument, komma at senaste filer och samarbeta med teammedlemmar."
+      },
+      "createDoc": {
+        "title": "Skapa ditt forsta dokument",
+        "description": "Klicka pa '+'-knappen pa instrumentpanelen for att skapa ett nytt dokument. Valj fran textdokument, kodredigerare, kalkylblad, kanban-tavlor, presentationer och mer."
+      },
+      "share": {
+        "title": "Dela med ditt team",
+        "description": "Klicka pa delningsknappen i verktygsfältet for att dela ett dokument. Du kan dela med specifika teammedlemmar eller skapa en lank."
+      }
+    }
+  },
+  "features": {
+    "docs": {
+      "title": "Skriv och dela dokument",
+      "steps": {
+        "intro": {
+          "title": "Textdokument",
+          "description": "CryptPads textredigerare later dig skapa formaterade dokument med rubriker, listor, tabeller och bilder. Allt ar krypterat anda-till-anda."
+        },
+        "create": {
+          "title": "Skapa ett dokument",
+          "description": "Klicka pa '+' och valj 'Text'. Ett nytt krypterat dokument skapas. Anvand verktygsfältet for att formatera text."
+        },
+        "collaborate": {
+          "title": "Realtidssamarbete",
+          "description": "Dela dokumentet med teammedlemmar for realtidssamarbete. Du ser andra anvandares markorer och andringar i realtid."
+        },
+        "share": {
+          "title": "Delning och atkomstkontroll",
+          "description": "Klicka pa delningsknappen for att skapa en lank. Du kan ange behorigheter till 'Visa' eller 'Redigera'."
+        }
+      }
+    },
+    "kanban": {
+      "title": "Uppgiftstavlor (Kanban)",
+      "steps": {
+        "intro": {
+          "title": "Kanban-uppgiftstavlor",
+          "description": "CryptPads Kanban-applikation later dig organisera uppgifter visuellt med tavlor, kolumner och kort."
+        },
+        "create": {
+          "title": "Skapa en Kanban-tavla",
+          "description": "Klicka pa '+' och valj 'Kanban'. Skapa kolumner for dina arbetsflodesstaeg och lagg till kort for uppgifter."
+        },
+        "manage": {
+          "title": "Hantera uppgifter",
+          "description": "Klicka pa ett kort for att lagga till detaljer. Dra och slapp kort mellan kolumner for att uppdatera status."
+        }
+      }
+    },
+    "presentations": {
+      "title": "Presentationer",
+      "steps": {
+        "intro": {
+          "title": "Skapa presentationer",
+          "description": "CryptPad inkluderar ett Markdown-baserat presentationsverktyg for att snabbt skapa bildspel."
+        },
+        "create": {
+          "title": "Bygga dina bilder",
+          "description": "Klicka pa '+' och valj 'Bild'. Anvand Markdown-syntax for att skapa bilder — separera bilder med '---'."
+        },
+        "present": {
+          "title": "Presentera och dela",
+          "description": "Klicka pa 'Presentera' for att ga in i helskarmslage. Navigera bilder med piltangenterna."
+        }
+      }
+    },
+    "unitUse": {
+      "title": "CryptPad i enhetens anvandning",
+      "steps": {
+        "intro": {
+          "title": "CryptPad for din enhet",
+          "description": "CryptPad ar distribuerat som en del av din enhets Deploy App-miljo. All data stannar pa din infrastruktur, krypterad hela tiden."
+        },
+        "ops": {
+          "title": "Operativ planering",
+          "description": "Anvand CryptPad for uppdragsplaneringsdokument, delade briefinganteckningar och samarbetsrapporter."
+        },
+        "secure": {
+          "title": "Sakerhet och fortroende",
+          "description": "CryptPad anvander nollkunskapskryptering: dina data krypteras i din webblasare innan de nar servern. Kombinerat med Deploy Apps certifikatbaserade autentisering kan bara verifierade teammedlemmar komma at delade resurser."
+        }
+      }
+    }
+  }
+}
