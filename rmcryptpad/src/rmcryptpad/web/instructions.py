@@ -11,7 +11,9 @@ router = APIRouter(dependencies=[Depends(require_verified_mtls_header)])
 
 
 @router.post("/instructions/{language}", response_model=InstructionsResponse)
-async def user_instructions(user: UserCRUDRequest, request: Request, language: str) -> InstructionsResponse:
+async def user_instructions(
+    user: UserCRUDRequest, request: Request, language: str
+) -> InstructionsResponse:
     """Return product guidance for the current callsign."""
     require_rm_caller(request)
     return InstructionsResponse(

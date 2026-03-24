@@ -7,4 +7,3 @@ class NotFound(Exception):
 
 class Deleted(Exception):
     """Requested record exists but is deleted or otherwise inactive."""
-

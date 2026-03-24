@@ -21,11 +21,7 @@ export const MetaProvider = ({
 }) => {
   const value = useMemo(() => meta, [meta]);
 
-  return (
-    <MetaContext.Provider value={value}>
-      {children}
-    </MetaContext.Provider>
-  );
+  return <MetaContext.Provider value={value}>{children}</MetaContext.Provider>;
 };
 
 export const useMeta = () => {

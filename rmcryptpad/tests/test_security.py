@@ -25,15 +25,21 @@ def _build_cert_pem(common_name: str) -> str:
         .issuer_name(issuer)
         .public_key(key.public_key())
         .serial_number(x509.random_serial_number())
-        .not_valid_before(datetime.datetime.now(datetime.UTC) - datetime.timedelta(days=1))
-        .not_valid_after(datetime.datetime.now(datetime.UTC) + datetime.timedelta(days=30))
+        .not_valid_before(
+            datetime.datetime.now(datetime.UTC) - datetime.timedelta(days=1)
+        )
+        .not_valid_after(
+            datetime.datetime.now(datetime.UTC) + datetime.timedelta(days=30)
+        )
         .sign(key, hashes.SHA256())
     )
     return cert.public_bytes(serialization.Encoding.PEM).decode("utf-8")
 
 
 def _format_fingerprint_header(raw_fingerprint: str) -> str:
-    return ":".join(raw_fingerprint[i : i + 2] for i in range(0, len(raw_fingerprint), 2)).upper()
+    return ":".join(
+        raw_fingerprint[i : i + 2] for i in range(0, len(raw_fingerprint), 2)
+    ).upper()
 
 
 def test_missing_mtls_header_is_forbidden(dbinstance: None) -> None:
@@ -43,7 +49,11 @@ def test_missing_mtls_header_is_forbidden(dbinstance: None) -> None:
     with TestClient(app) as client:
         response = client.post(
             "/api/v1/users/created",
-            json={"uuid": "uuid-a", "callsign": "VIRTA-1", "x509cert": _build_cert_pem("VIRTA-1")},
+            json={
+                "uuid": "uuid-a",
+                "callsign": "VIRTA-1",
+                "x509cert": _build_cert_pem("VIRTA-1"),
+            },
         )
         assert response.status_code == 403
 
@@ -63,7 +73,9 @@ def test_forwarded_mtls_fingerprint_is_normalized(dbinstance: None) -> None:
             headers={
                 "X-ClientCert-DN": "CN=VIRTA-1,O=RM",
                 "X-SSL-Client-Verify": "SUCCESS",
-                "X-SSL-Client-Fingerprint": _format_fingerprint_header("aabbccddeeff00112233445566778899"),
+                "X-SSL-Client-Fingerprint": _format_fingerprint_header(
+                    "aabbccddeeff00112233445566778899"
+                ),
             },
         )
 
@@ -79,7 +91,14 @@ async def test_unverified_proxy_header_is_forbidden(dbinstance: None) -> None:
     with TestClient(app) as client:
         response = client.post(
             "/api/v1/users/created",
-            headers={"X-ClientCert-DN": "CN=rasenmaeher,O=RM", "X-SSL-Client-Verify": "FAILED"},
-            json={"uuid": "uuid-a", "callsign": "VIRTA-1", "x509cert": _build_cert_pem("VIRTA-1")},
+            headers={
+                "X-ClientCert-DN": "CN=rasenmaeher,O=RM",
+                "X-SSL-Client-Verify": "FAILED",
+            },
+            json={
+                "uuid": "uuid-a",
+                "callsign": "VIRTA-1",
+                "x509cert": _build_cert_pem("VIRTA-1"),
+            },
         )
         assert response.status_code == 403

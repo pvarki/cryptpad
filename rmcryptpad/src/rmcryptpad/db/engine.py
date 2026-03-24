@@ -20,7 +20,9 @@ class EngineWrapper:
     _singleton: ClassVar[Optional["EngineWrapper"]] = None
 
     def __post_init__(self) -> None:
-        self.engine = create_engine(self.settings.dsn, pool_pre_ping=True, echo=self.settings.echo)
+        self.engine = create_engine(
+            self.settings.dsn, pool_pre_ping=True, echo=self.settings.echo
+        )
 
     @classmethod
     def singleton(cls, **kwargs: Any) -> "EngineWrapper":
@@ -37,4 +39,3 @@ class EngineWrapper:
     def session(self) -> Session:
         """Return a session bound to the singleton engine."""
         return Session(self.engine)
-

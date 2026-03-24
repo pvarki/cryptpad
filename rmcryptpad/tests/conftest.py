@@ -57,16 +57,27 @@ async def dbinstance(
     patch = pytest.MonkeyPatch()
     try:
         patch.setenv("RMCRYPTPAD_DATABASE_HOST", docker_ip)
-        patch.setenv("RMCRYPTPAD_DATABASE_PORT", str(docker_services.port_for("postgres", 5432)))
-        from rmcryptpad.config import DBSettings  # pylint: disable=import-outside-toplevel
-        from rmcryptpad.oidc.keys import OIDCKeyManager  # pylint: disable=import-outside-toplevel
-        from rmcryptpad.db.engine import EngineWrapper  # pylint: disable=import-outside-toplevel
+        patch.setenv(
+            "RMCRYPTPAD_DATABASE_PORT", str(docker_services.port_for("postgres", 5432))
+        )
+        from rmcryptpad.config import (
+            DBSettings,
+        )  # pylint: disable=import-outside-toplevel
+        from rmcryptpad.oidc.keys import (
+            OIDCKeyManager,
+        )  # pylint: disable=import-outside-toplevel
+        from rmcryptpad.db.engine import (
+            EngineWrapper,
+        )  # pylint: disable=import-outside-toplevel
 
         DBSettings._singleton = None
         EngineWrapper._singleton = None
         OIDCKeyManager._singleton = None
         await asyncio.sleep(1.0)
-        from rmcryptpad.db.dbinit import drop_db, init_db  # pylint: disable=import-outside-toplevel
+        from rmcryptpad.db.dbinit import (
+            drop_db,
+            init_db,
+        )  # pylint: disable=import-outside-toplevel
 
         await init_db()
         yield None

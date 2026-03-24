@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { ExternalLink, FileText, KanbanSquare, Presentation, Users } from "lucide-react";
+import {
+  ExternalLink,
+  FileText,
+  KanbanSquare,
+  Presentation,
+  Users,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { OnboardingGuide } from "@/components/OnboardingGuide";
 import { FeatureGuide } from "@/components/FeatureGuide";
@@ -17,10 +23,7 @@ interface FeatureStepDef {
   mobileImage?: string;
 }
 
-function getFeatureSteps(
-  featureKey: string,
-  theme: string,
-): FeatureStepDef[] {
+function getFeatureSteps(featureKey: string, theme: string): FeatureStepDef[] {
   const basePath = `/ui/cryptpad/assets/features/${featureKey}`;
   const steps: Record<string, FeatureStepDef[]> = {
     docs: [

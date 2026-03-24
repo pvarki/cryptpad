@@ -84,8 +84,8 @@ const getOnboardingImage = (
   const imagePath = forceDesktop
     ? step.image
     : isMobile && step.mobileImage
-      ? step.mobileImage
-      : step.image;
+    ? step.mobileImage
+    : step.image;
 
   return imagePath;
 };
@@ -127,7 +127,10 @@ export function OnboardingGuide() {
   const { deployment } = useHealthCheck();
   const meta = useMeta();
 
-  const relevantSteps = useMemo(() => ONBOARDING_STEPS(meta.theme), [meta.theme]);
+  const relevantSteps = useMemo(
+    () => ONBOARDING_STEPS(meta.theme),
+    [meta.theme],
+  );
 
   useEffect(() => {
     if (isMobile === undefined || relevantSteps.length === 0) return;

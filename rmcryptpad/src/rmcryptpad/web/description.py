@@ -19,7 +19,9 @@ def _description_text(language: str) -> str:
 
 
 @router.get("/description/{language}", response_model=ProductDescription)
-async def return_product_description(language: str, request: Request) -> ProductDescription:
+async def return_product_description(
+    language: str, request: Request
+) -> ProductDescription:
     require_rm_caller(request)
     return ProductDescription(
         shortname="cryptpad",
@@ -31,7 +33,9 @@ async def return_product_description(language: str, request: Request) -> Product
 
 
 @router_v2.get("/description/{language}", response_model=ProductDescriptionExtended)
-async def return_product_description_extended(language: str, request: Request) -> ProductDescriptionExtended:
+async def return_product_description_extended(
+    language: str, request: Request
+) -> ProductDescriptionExtended:
     require_rm_caller(request)
     settings = RMCryptPadSettings.singleton()
     return ProductDescriptionExtended(

@@ -29,8 +29,12 @@ def _user_payload(callsign: str) -> dict[str, str]:
         .issuer_name(issuer)
         .public_key(key.public_key())
         .serial_number(x509.random_serial_number())
-        .not_valid_before(datetime.datetime.now(datetime.UTC) - datetime.timedelta(days=1))
-        .not_valid_after(datetime.datetime.now(datetime.UTC) + datetime.timedelta(days=30))
+        .not_valid_before(
+            datetime.datetime.now(datetime.UTC) - datetime.timedelta(days=1)
+        )
+        .not_valid_after(
+            datetime.datetime.now(datetime.UTC) + datetime.timedelta(days=30)
+        )
         .sign(key, hashes.SHA256())
     )
     return {
@@ -46,7 +50,9 @@ def test_client_data_routes_return_settings_urls(dbinstance: None) -> None:
 
     with TestClient(app) as client:
         for path in ("/api/v2/clients/data", "/api/v2/admin/clients/data"):
-            response = client.post(path, headers=_rm_headers(), json=_user_payload("VIRTA-1"))
+            response = client.post(
+                path, headers=_rm_headers(), json=_user_payload("VIRTA-1")
+            )
             assert response.status_code == 200
             payload = response.json()["data"]
             assert payload["url"] == "https://cryptpad.localhost:8443"
@@ -56,7 +62,9 @@ def test_client_data_routes_return_settings_urls(dbinstance: None) -> None:
 
 
 @pytest.mark.asyncio
-async def test_revoked_user_stays_revoked_after_client_data_access(dbinstance: None) -> None:
+async def test_revoked_user_stays_revoked_after_client_data_access(
+    dbinstance: None,
+) -> None:
     _ = dbinstance
     app = get_app_no_init()
 

@@ -13,7 +13,9 @@ router = APIRouter(dependencies=[Depends(require_verified_mtls_header)])
 router_admin = APIRouter(dependencies=[Depends(require_verified_mtls_header)])
 
 
-async def _build_client_data(user: UserCRUDRequest, request: Request) -> ClientDataResponse:
+async def _build_client_data(
+    user: UserCRUDRequest, request: Request
+) -> ClientDataResponse:
     require_rm_caller(request)
     settings = RMCryptPadSettings.singleton()
     return ClientDataResponse(
@@ -32,5 +34,7 @@ async def client_data(user: UserCRUDRequest, request: Request) -> ClientDataResp
 
 
 @router_admin.post("/admin/clients/data", response_model=ClientDataResponse)
-async def admin_client_data(user: UserCRUDRequest, request: Request) -> ClientDataResponse:
+async def admin_client_data(
+    user: UserCRUDRequest, request: Request
+) -> ClientDataResponse:
     return await _build_client_data(user, request)

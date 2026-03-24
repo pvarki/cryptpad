@@ -19,7 +19,9 @@ def test_ui_bundle_is_served_from_nested_mount(monkeypatch, tmp_path: Path) -> N
     (ui_dir / "remoteEntry.js").write_text("// remote bundle\n", encoding="utf-8")
 
     monkeypatch.setattr("rmcryptpad.web.application.init_db", noop_init_db)
-    monkeypatch.setattr("rmcryptpad.web.application.OIDCKeyManager.singleton", lambda: None)
+    monkeypatch.setattr(
+        "rmcryptpad.web.application.OIDCKeyManager.singleton", lambda: None
+    )
     monkeypatch.setenv("RMCRYPTPAD_UI_DIR", str(ui_dir))
     RMCryptPadSettings._singleton = None
     app = get_app_no_init()

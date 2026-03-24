@@ -34,17 +34,28 @@ export default function CryptPadApp({ data, meta }: Props) {
   const [ready, setReady] = useState(false);
   const { i18n } = useTranslation(PRODUCT_SHORTNAME);
 
-  const rootRoute = useMemo(() => createRootRoute({
-    component: RootLayoutComponent,
-  }), []);
+  const rootRoute = useMemo(
+    () =>
+      createRootRoute({
+        component: RootLayoutComponent,
+      }),
+    [],
+  );
 
-  const homeRoute = useMemo(() => createRoute({
-    getParentRoute: () => rootRoute,
-    path: "/",
-    component: () => <HomePage data={data} />,
-  }), [rootRoute, data]);
+  const homeRoute = useMemo(
+    () =>
+      createRoute({
+        getParentRoute: () => rootRoute,
+        path: "/",
+        component: () => <HomePage data={data} />,
+      }),
+    [rootRoute, data],
+  );
 
-  const routeTree = useMemo(() => rootRoute.addChildren([homeRoute]), [rootRoute, homeRoute]);
+  const routeTree = useMemo(
+    () => rootRoute.addChildren([homeRoute]),
+    [rootRoute, homeRoute],
+  );
 
   const router = useMemo(
     () => createRouter({ routeTree, basepath: "/product/cryptpad" }),

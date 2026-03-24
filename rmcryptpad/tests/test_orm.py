@@ -26,8 +26,12 @@ def _build_test_cert_pem(common_name: str = "virta.example.local") -> tuple[str,
         .issuer_name(issuer)
         .public_key(key.public_key())
         .serial_number(x509.random_serial_number())
-        .not_valid_before(datetime.datetime.now(datetime.UTC) - datetime.timedelta(days=1))
-        .not_valid_after(datetime.datetime.now(datetime.UTC) + datetime.timedelta(days=30))
+        .not_valid_before(
+            datetime.datetime.now(datetime.UTC) - datetime.timedelta(days=1)
+        )
+        .not_valid_after(
+            datetime.datetime.now(datetime.UTC) + datetime.timedelta(days=30)
+        )
         .sign(key, hashes.SHA256())
     )
     pem = cert.public_bytes(serialization.Encoding.PEM).decode("utf-8")
@@ -63,7 +67,9 @@ async def test_callsign_is_identity(dbinstance: None) -> None:
 
 
 @pytest.mark.asyncio
-async def test_user_admin_state_is_preserved_when_not_explicitly_changed(dbinstance: None) -> None:
+async def test_user_admin_state_is_preserved_when_not_explicitly_changed(
+    dbinstance: None,
+) -> None:
     """Existing admin state should survive a normal callsign refresh."""
     _ = dbinstance
     first_cert = _build_test_cert_only("VIRTA-ADMIN")

@@ -32,23 +32,38 @@ def _payload(certcn: str) -> dict[str, str]:
         .issuer_name(issuer)
         .public_key(key.public_key())
         .serial_number(x509.random_serial_number())
-        .not_valid_before(datetime.datetime.now(datetime.UTC) - datetime.timedelta(days=1))
-        .not_valid_after(datetime.datetime.now(datetime.UTC) + datetime.timedelta(days=30))
+        .not_valid_before(
+            datetime.datetime.now(datetime.UTC) - datetime.timedelta(days=1)
+        )
+        .not_valid_after(
+            datetime.datetime.now(datetime.UTC) + datetime.timedelta(days=30)
+        )
         .sign(key, hashes.SHA256())
     )
-    return {"certcn": certcn, "x509cert": cert.public_bytes(serialization.Encoding.PEM).decode("utf-8")}
+    return {
+        "certcn": certcn,
+        "x509cert": cert.public_bytes(serialization.Encoding.PEM).decode("utf-8"),
+    }
 
 
 @pytest.mark.asyncio
-async def test_interop_add_and_authz_return_product_credentials(dbinstance: None) -> None:
+async def test_interop_add_and_authz_return_product_credentials(
+    dbinstance: None,
+) -> None:
     _ = dbinstance
     app = get_app_no_init()
 
     with TestClient(app) as client:
-        response = client.post("/api/v1/interop/add", headers=_rm_headers(), json=_payload("cryptpad.localhost"))
+        response = client.post(
+            "/api/v1/interop/add",
+            headers=_rm_headers(),
+            json=_payload("cryptpad.localhost"),
+        )
         assert response.status_code == 200
 
-        authz = client.get("/api/v1/interop/authz", headers=_product_headers("cryptpad.localhost"))
+        authz = client.get(
+            "/api/v1/interop/authz", headers=_product_headers("cryptpad.localhost")
+        )
         assert authz.status_code == 200
         payload = authz.json()
         assert payload["type"] == "basic"

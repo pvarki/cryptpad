@@ -25,10 +25,16 @@ class User(ORMBaseModel, table=True):
 
     __tablename__ = "users"
 
-    callsign: str = Field(index=True, unique=True, description="Canonical CryptPad identity")
-    rmuuid: str = Field(index=True, description="Latest RM UUID observed for this callsign")
+    callsign: str = Field(
+        index=True, unique=True, description="Canonical CryptPad identity"
+    )
+    rmuuid: str = Field(
+        index=True, description="Latest RM UUID observed for this callsign"
+    )
     cert_pem: str = Field(description="Current client certificate PEM")
-    cert_fingerprint: str = Field(index=True, description="SHA-256 fingerprint of cert_pem")
+    cert_fingerprint: str = Field(
+        index=True, description="SHA-256 fingerprint of cert_pem"
+    )
     is_rmadmin: bool = Field(default=False)
     revoked: datetime.datetime | None = Field(default=None, index=True)
 

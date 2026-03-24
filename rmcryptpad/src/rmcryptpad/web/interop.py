@@ -13,7 +13,9 @@ interoprouter = APIRouter(dependencies=[Depends(require_verified_mtls_header)])
 
 
 @interoprouter.post("/add", response_model=OperationResultResponse)
-async def add_product(product: ProductAddRequest, request: Request) -> OperationResultResponse:
+async def add_product(
+    product: ProductAddRequest, request: Request
+) -> OperationResultResponse:
     """Register a peer product."""
     require_rm_caller(request)
     await Product.create_or_update(certcn=product.certcn)
@@ -24,4 +26,6 @@ async def add_product(product: ProductAddRequest, request: Request) -> Operation
 async def get_authz(request: Request) -> ProductAuthzResponse:
     """Return product-to-product authz credentials."""
     product = await Product.by_cn(get_client_cn(request))
-    return ProductAuthzResponse(type="basic", username=product.api_username, password=product.api_password)
+    return ProductAuthzResponse(
+        type="basic", username=product.api_username, password=product.api_password
+    )

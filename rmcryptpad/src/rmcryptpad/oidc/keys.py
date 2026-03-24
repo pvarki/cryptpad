@@ -27,7 +27,9 @@ def _b64url_int(value: int) -> str:
 class OIDCKeyManager:
     """Load or create the RSA signing key used for OIDC tokens."""
 
-    key_dir: Path = field(default_factory=lambda: Path(RMCryptPadSettings.singleton().oidc_key_dir))
+    key_dir: Path = field(
+        default_factory=lambda: Path(RMCryptPadSettings.singleton().oidc_key_dir)
+    )
     _private_key: rsa.RSAPrivateKey | None = field(default=None, init=False, repr=False)
 
     _singleton: ClassVar[Optional["OIDCKeyManager"]] = None
@@ -40,7 +42,9 @@ class OIDCKeyManager:
     def singleton(cls) -> "OIDCKeyManager":
         """Return the cached key manager."""
         if cls._singleton is None:
-            cls._singleton = cls(key_dir=Path(RMCryptPadSettings.singleton().oidc_key_dir))
+            cls._singleton = cls(
+                key_dir=Path(RMCryptPadSettings.singleton().oidc_key_dir)
+            )
         return cls._singleton
 
     @property
@@ -93,10 +97,16 @@ class OIDCKeyManager:
         import json
         from cryptography.hazmat.primitives.asymmetric import padding
 
-        header_b64 = _b64url(json.dumps(header, separators=(",", ":"), sort_keys=True).encode("utf-8"))
-        payload_b64 = _b64url(json.dumps(payload, separators=(",", ":"), sort_keys=True).encode("utf-8"))
+        header_b64 = _b64url(
+            json.dumps(header, separators=(",", ":"), sort_keys=True).encode("utf-8")
+        )
+        payload_b64 = _b64url(
+            json.dumps(payload, separators=(",", ":"), sort_keys=True).encode("utf-8")
+        )
         signing_input = f"{header_b64}.{payload_b64}".encode("utf-8")
-        signature = self.private_key.sign(signing_input, padding.PKCS1v15(), hashes.SHA256())
+        signature = self.private_key.sign(
+            signing_input, padding.PKCS1v15(), hashes.SHA256()
+        )
         return f"{header_b64}.{payload_b64}.{_b64url(signature)}"
 
     def verify_jwt(self, token: str) -> dict[str, Any]:
@@ -112,7 +122,9 @@ class OIDCKeyManager:
             raise ValueError("Unknown JWT key id")
         signing_input = f"{header_b64}.{payload_b64}".encode("utf-8")
         signature = base64.urlsafe_b64decode(_pad(signature_b64))
-        self.private_key.public_key().verify(signature, signing_input, padding.PKCS1v15(), hashes.SHA256())
+        self.private_key.public_key().verify(
+            signature, signing_input, padding.PKCS1v15(), hashes.SHA256()
+        )
         return json.loads(base64.urlsafe_b64decode(_pad(payload_b64)))
 
 

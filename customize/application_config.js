@@ -11,4 +11,3 @@
     define(['/common/application_config_internal.js'], factory);
   }
 })();
-

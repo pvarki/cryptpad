@@ -28,15 +28,21 @@ def _build_cert_pem(common_name: str) -> str:
         .issuer_name(issuer)
         .public_key(key.public_key())
         .serial_number(x509.random_serial_number())
-        .not_valid_before(datetime.datetime.now(datetime.UTC) - datetime.timedelta(days=1))
-        .not_valid_after(datetime.datetime.now(datetime.UTC) + datetime.timedelta(days=30))
+        .not_valid_before(
+            datetime.datetime.now(datetime.UTC) - datetime.timedelta(days=1)
+        )
+        .not_valid_after(
+            datetime.datetime.now(datetime.UTC) + datetime.timedelta(days=30)
+        )
         .sign(key, hashes.SHA256())
     )
     return cert.public_bytes(serialization.Encoding.PEM).decode("utf-8")
 
 
 @pytest.mark.asyncio
-async def test_user_created_and_updated_keep_callsign_identity(dbinstance: None) -> None:
+async def test_user_created_and_updated_keep_callsign_identity(
+    dbinstance: None,
+) -> None:
     _ = dbinstance
     app = get_app_no_init()
     first_cert = _build_cert_pem("VIRTA-1")
@@ -73,7 +79,9 @@ async def test_user_created_and_updated_keep_callsign_identity(dbinstance: None)
 
 
 @pytest.mark.asyncio
-async def test_user_created_accepts_cfssl_escaped_certificate_payload(dbinstance: None) -> None:
+async def test_user_created_accepts_cfssl_escaped_certificate_payload(
+    dbinstance: None,
+) -> None:
     _ = dbinstance
     app = get_app_no_init()
     cert_pem = _build_cert_pem("VIRTA-CFSSL")
@@ -83,7 +91,11 @@ async def test_user_created_accepts_cfssl_escaped_certificate_payload(dbinstance
         created = client.post(
             "/api/v1/users/created",
             headers=_rm_headers(),
-            json={"uuid": "uuid-cfssl", "callsign": "VIRTA-CFSSL", "x509cert": escaped_cert_pem},
+            json={
+                "uuid": "uuid-cfssl",
+                "callsign": "VIRTA-CFSSL",
+                "x509cert": escaped_cert_pem,
+            },
         )
 
     assert created.status_code == 200
@@ -103,7 +115,11 @@ async def test_user_revoked_promoted_and_demoted_update_state(dbinstance: None) 
             client.post(
                 "/api/v1/users/created",
                 headers=_rm_headers(),
-                json={"uuid": "uuid-admin", "callsign": "VIRTA-ADMIN", "x509cert": cert_pem},
+                json={
+                    "uuid": "uuid-admin",
+                    "callsign": "VIRTA-ADMIN",
+                    "x509cert": cert_pem,
+                },
             ).status_code
             == 200
         )
@@ -111,7 +127,11 @@ async def test_user_revoked_promoted_and_demoted_update_state(dbinstance: None) 
             client.post(
                 "/api/v1/users/promoted",
                 headers=_rm_headers(),
-                json={"uuid": "uuid-admin", "callsign": "VIRTA-ADMIN", "x509cert": cert_pem},
+                json={
+                    "uuid": "uuid-admin",
+                    "callsign": "VIRTA-ADMIN",
+                    "x509cert": cert_pem,
+                },
             ).status_code
             == 200
         )
@@ -124,7 +144,11 @@ async def test_user_revoked_promoted_and_demoted_update_state(dbinstance: None) 
             client.post(
                 "/api/v1/users/demoted",
                 headers=_rm_headers(),
-                json={"uuid": "uuid-admin", "callsign": "VIRTA-ADMIN", "x509cert": cert_pem},
+                json={
+                    "uuid": "uuid-admin",
+                    "callsign": "VIRTA-ADMIN",
+                    "x509cert": cert_pem,
+                },
             ).status_code
             == 200
         )
@@ -132,7 +156,11 @@ async def test_user_revoked_promoted_and_demoted_update_state(dbinstance: None) 
             client.post(
                 "/api/v1/users/revoked",
                 headers=_rm_headers(),
-                json={"uuid": "uuid-admin", "callsign": "VIRTA-ADMIN", "x509cert": cert_pem},
+                json={
+                    "uuid": "uuid-admin",
+                    "callsign": "VIRTA-ADMIN",
+                    "x509cert": cert_pem,
+                },
             ).status_code
             == 200
         )
@@ -150,7 +178,10 @@ async def test_wrong_rm_cn_is_forbidden_on_rm_only_routes(dbinstance: None) -> N
     with TestClient(app) as client:
         response = client.post(
             "/api/v1/users/created",
-            headers={"X-ClientCert-DN": "CN=not-rasenmaeher,O=RM", "X-SSL-Client-Verify": "SUCCESS"},
+            headers={
+                "X-ClientCert-DN": "CN=not-rasenmaeher,O=RM",
+                "X-SSL-Client-Verify": "SUCCESS",
+            },
             json={
                 "uuid": "uuid-bad",
                 "callsign": "VIRTA-BAD",

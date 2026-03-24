@@ -29,8 +29,12 @@ def _user_payload(callsign: str) -> dict[str, str]:
         .issuer_name(issuer)
         .public_key(key.public_key())
         .serial_number(x509.random_serial_number())
-        .not_valid_before(datetime.datetime.now(datetime.UTC) - datetime.timedelta(days=1))
-        .not_valid_after(datetime.datetime.now(datetime.UTC) + datetime.timedelta(days=30))
+        .not_valid_before(
+            datetime.datetime.now(datetime.UTC) - datetime.timedelta(days=1)
+        )
+        .not_valid_after(
+            datetime.datetime.now(datetime.UTC) + datetime.timedelta(days=30)
+        )
         .sign(key, hashes.SHA256())
     )
     return {
@@ -63,9 +67,21 @@ async def test_instructions_route_returns_product_guidance(dbinstance: None) -> 
     payload = _user_payload("VIRTA-1")
 
     with TestClient(app) as client:
-        assert client.post("/api/v1/users/created", headers=_rm_headers(), json=payload).status_code == 200
-        assert client.post("/api/v1/users/revoked", headers=_rm_headers(), json=payload).status_code == 200
-        response = client.post("/api/v1/instructions/en", headers=_rm_headers(), json=payload)
+        assert (
+            client.post(
+                "/api/v1/users/created", headers=_rm_headers(), json=payload
+            ).status_code
+            == 200
+        )
+        assert (
+            client.post(
+                "/api/v1/users/revoked", headers=_rm_headers(), json=payload
+            ).status_code
+            == 200
+        )
+        response = client.post(
+            "/api/v1/instructions/en", headers=_rm_headers(), json=payload
+        )
         assert response.status_code == 200
         body = response.json()
         assert body["language"] == "en"

@@ -8,7 +8,6 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 
-
 interface FeatureStep {
   id: string;
   title: string;
@@ -163,9 +162,7 @@ export function FeatureGuide({
         </Button>
 
         <Button
-          onClick={
-            currentStep === steps.length - 1 ? handleFinish : handleNext
-          }
+          onClick={currentStep === steps.length - 1 ? handleFinish : handleNext}
           variant="outline"
           className="flex-1 h-12 bg-primary-light hover:bg-primary-light/90 text-primary-light-foreground cursor-pointer"
         >
