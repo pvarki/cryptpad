@@ -4,12 +4,13 @@ from __future__ import annotations
 
 import base64
 import hashlib
+import json
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, ClassVar, Optional
 
 from cryptography.hazmat.primitives import hashes, serialization
-from cryptography.hazmat.primitives.asymmetric import rsa
+from cryptography.hazmat.primitives.asymmetric import padding, rsa
 
 from ..config import RMCryptPadSettings
 
@@ -55,10 +56,12 @@ class OIDCKeyManager:
 
     @property
     def private_key_path(self) -> Path:
+        """Return the path to the PEM key file."""
         return self.key_dir / "oidc-signing-key.pem"
 
     @property
     def kid(self) -> str:
+        """Return the SHA-256 thumbprint of the public key."""
         pub = self.private_key.public_key().public_bytes(
             encoding=serialization.Encoding.DER,
             format=serialization.PublicFormat.SubjectPublicKeyInfo,
@@ -69,7 +72,10 @@ class OIDCKeyManager:
         key_path = self.private_key_path
         if key_path.is_file():
             data = key_path.read_bytes()
-            return serialization.load_pem_private_key(data, password=None)
+            key = serialization.load_pem_private_key(data, password=None)
+            if not isinstance(key, rsa.RSAPrivateKey):
+                raise TypeError(f"Expected RSA private key, got {type(key).__name__}")
+            return key
         private_key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
         key_path.write_bytes(
             private_key.private_bytes(
@@ -94,9 +100,6 @@ class OIDCKeyManager:
 
     def sign_jwt(self, header: dict[str, Any], payload: dict[str, Any]) -> str:
         """Sign a JWT using RS256."""
-        import json
-        from cryptography.hazmat.primitives.asymmetric import padding
-
         header_b64 = _b64url(
             json.dumps(header, separators=(",", ":"), sort_keys=True).encode("utf-8")
         )
@@ -111,11 +114,8 @@ class OIDCKeyManager:
 
     def verify_jwt(self, token: str) -> dict[str, Any]:
         """Verify and decode a JWT signed with the managed key."""
-        import json
-        from cryptography.hazmat.primitives.asymmetric import padding
-
         header_b64, payload_b64, signature_b64 = token.split(".")
-        header = json.loads(base64.urlsafe_b64decode(_pad(header_b64)))
+        header: dict[str, Any] = json.loads(base64.urlsafe_b64decode(_pad(header_b64)))
         if header.get("alg") != "RS256":
             raise ValueError("Unsupported JWT algorithm")
         if header.get("kid") != self.kid:
@@ -125,7 +125,8 @@ class OIDCKeyManager:
         self.private_key.public_key().verify(
             signature, signing_input, padding.PKCS1v15(), hashes.SHA256()
         )
-        return json.loads(base64.urlsafe_b64decode(_pad(payload_b64)))
+        result: dict[str, Any] = json.loads(base64.urlsafe_b64decode(_pad(payload_b64)))
+        return result
 
 
 def _pad(value: str) -> bytes:
