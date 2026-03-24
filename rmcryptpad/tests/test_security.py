@@ -74,13 +74,16 @@ def test_forwarded_mtls_fingerprint_is_normalized(dbinstance: None) -> None:
                 "X-ClientCert-DN": "CN=VIRTA-1,O=RM",
                 "X-SSL-Client-Verify": "SUCCESS",
                 "X-SSL-Client-Fingerprint": _format_fingerprint_header(
-                    "aabbccddeeff00112233445566778899"
+                    "aabbccddeeff00112233445566778899"  # pragma: allowlist secret
                 ),
             },
         )
 
     assert response.status_code == 200
-    assert response.json()["fingerprint"] == "aabbccddeeff00112233445566778899"
+    assert (
+        response.json()["fingerprint"]
+        == "aabbccddeeff00112233445566778899"  # pragma: allowlist secret
+    )
 
 
 @pytest.mark.asyncio

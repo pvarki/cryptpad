@@ -127,8 +127,8 @@ curl_status() {
 wait_for_http() {
   local host="$1"
   local url="$2"
-  local attempt status
-  for attempt in $(seq 1 30); do
+  local _attempt status
+  for _attempt in $(seq 1 30); do
     status="$(curl_status "${host}" "${url}" || true)"
     case "${status}" in
       200|301|302|303)

@@ -1,6 +1,6 @@
 (() => {
   const factory = (AppConfig) => {
-    AppConfig.loginSalt = 'ac73deb9ef8944e51b2d4feafc2d5713764c26911aa12fd70168cc8be2754a33';
+    AppConfig.loginSalt = 'ac73deb9ef8944e51b2d4feafc2d5713764c26911aa12fd70168cc8be2754a33'; // pragma: allowlist secret
     AppConfig.minimumPasswordLength = 8;
     return AppConfig;
   };

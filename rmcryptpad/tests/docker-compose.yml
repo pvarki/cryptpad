@@ -6,7 +6,7 @@ services:
     environment:
       POSTGRES_DB: rmcryptpad
       POSTGRES_USER: rmcryptpad
-      POSTGRES_PASSWORD: rmcryptpadtestpwd
+      POSTGRES_PASSWORD: rmcryptpadtestpwd  # pragma: allowlist secret
     healthcheck:
       test: "pg_isready --dbname=$$POSTGRES_DB --username=$$POSTGRES_USER || exit 1"
       interval: 5s
