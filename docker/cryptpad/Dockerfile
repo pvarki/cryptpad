@@ -23,6 +23,32 @@ RUN curl -fsSL "https://github.com/cryptpad/sso/archive/refs/tags/${CRYPTPAD_SSO
 
 WORKDIR /src
 
+RUN node - <<'EOF'
+const fs = require('node:fs');
+
+const path = '/src/lib/http-worker.js';
+const source = fs.readFileSync(path, 'utf8');
+const original = `var EXEMPT = [
+    /^\\/common\\/onlyoffice\\/.*\\.html.*/,
+    /^\\/common\\/onlyoffice\\/dist\\/.*\\/sdkjs\\/common\\/spell\\/spell\\/spell.js.*/,  // OnlyOffice loads spell.wasm in a way that needs unsave-eval
+    /^\\/(sheet|presentation|doc)\\/inner\\.html.*/,
+    /^\\/unsafeiframe\\/inner\\.html.*$/,
+];`;
+const replacement = `var EXEMPT = [
+    /^\\/common\\/onlyoffice\\/.*\\.html.*/,
+    /^\\/common\\/onlyoffice\\/dist\\/.*\\/sdkjs\\/common\\/spell\\/spell\\/spell.js.*/,  // OnlyOffice loads spell.wasm in a way that needs unsave-eval
+    /^\\/(sheet|presentation|doc|diagram)\\/inner\\.html.*/,
+    /^\\/components\\/drawio\\/src\\/main\\/webapp\\/index\\.html.*/,
+    /^\\/unsafeiframe\\/inner\\.html.*$/,
+];`;
+
+if (!source.includes(original)) {
+  throw new Error('Unable to locate upstream EXEMPT block in /src/lib/http-worker.js');
+}
+
+fs.writeFileSync(path, source.replace(original, replacement));
+EOF
+
 RUN npm ci --omit=dev \
     && npm run install:components \
     && npm cache clean --force
