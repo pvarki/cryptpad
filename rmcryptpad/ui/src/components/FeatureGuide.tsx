@@ -7,7 +7,7 @@ import { ChevronRight, ChevronLeft, ImageOff } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
-import { useMeta } from "@/lib/metadata";
+
 
 interface FeatureStep {
   id: string;
@@ -38,7 +38,6 @@ export function FeatureGuide({
   const [imageLoading, setImageLoading] = useState(true);
   const isMobile = useIsMobile();
   const { t } = useTranslation(PRODUCT_SHORTNAME);
-  const meta = useMeta();
 
   const getImage = useCallback(
     (step: FeatureStep) => {

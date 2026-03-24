@@ -1,7 +1,81 @@
 {
+  "features": {
+    "docs": {
+      "steps": {
+        "collaborate": {
+          "description": "Jaa dokumentti tiimin jasenille reaaliaikaista yhteistyota varten. Naet muiden kayttajien kohdistimet ja muutokset reaaliaikaisesti.",
+          "title": "Reaaliaikainen yhteistyo"
+        },
+        "create": {
+          "description": "Klikkaa hallintapaneelissa '+' ja valitse 'Teksti'. Uusi salattu dokumentti luodaan. Kayta tyokalupalkkia tekstin muotoiluun ja sisallon lisaamiseen.",
+          "title": "Dokumentin luominen"
+        },
+        "intro": {
+          "description": "CryptPadin tekstieditorilla voit luoda muotoiltuja dokumentteja otsikoineen, luetteloineen, taulukoineen ja kuvineen. Kaikki on salattu paasta paahan.",
+          "title": "Tekstidokumentit"
+        },
+        "share": {
+          "description": "Klikkaa jakopainiketta luodaksesi linkin. Voit asettaa oikeudet 'Katso' (vain luku) tai 'Muokkaa' (taysi paasy).",
+          "title": "Jakaminen ja kayttooikeudet"
+        }
+      },
+      "title": "Kirjoita ja jaa dokumentteja"
+    },
+    "kanban": {
+      "steps": {
+        "create": {
+          "description": "Klikkaa '+' ja valitse 'Kanban'. Luo sarakkeita tyonkulun vaiheille ja lisaa kortteja tehtaville.",
+          "title": "Kanban-taulun luominen"
+        },
+        "intro": {
+          "description": "CryptPadin Kanban-sovelluksella voit jarjestaa tehtavia visuaalisesti taulujen, sarakkeiden ja korttien avulla.",
+          "title": "Kanban-tehtavataulut"
+        },
+        "manage": {
+          "description": "Klikkaa korttia lisataksesi tietoja. Ved\u00e4 ja pudota kortteja sarakkeiden valilla paivittaaksesi tilaa.",
+          "title": "Tehtavien hallinta"
+        }
+      },
+      "title": "Tehtavataulut (Kanban)"
+    },
+    "presentations": {
+      "steps": {
+        "create": {
+          "description": "Klikkaa '+' ja valitse 'Dia'. Kayta Markdown-syntaksia diojen luomiseen \u2014 erota diat merkinnalla '---'.",
+          "title": "Diojen rakentaminen"
+        },
+        "intro": {
+          "description": "CryptPad sisaltaa Markdown-pohjaisen esitystyokalun, jolla voit luoda diaesityksia nopeasti.",
+          "title": "Luo esityksia"
+        },
+        "present": {
+          "description": "Klikkaa 'Esita'-painiketta siirtyaksesi koko nayton esitystilaan. Navigoi dioja nuolinappaimilla.",
+          "title": "Esittaminen ja jakaminen"
+        }
+      },
+      "title": "Esitykset"
+    },
+    "unitUse": {
+      "steps": {
+        "intro": {
+          "description": "CryptPad on kaytetty osana yksikon Deploy App -ymparistoa. Kaikki data pysyy omassa infrastruktuurissa, salattuna koko ajan.",
+          "title": "CryptPad yksikolle"
+        },
+        "ops": {
+          "description": "Kayta CryptPadia tehtavasuunnitteludokumentteihin, jaettuihin tilannekatsauksiin ja yhteistyoraportteihin.",
+          "title": "Operatiivinen suunnittelu"
+        },
+        "secure": {
+          "description": "CryptPad kayttaa nollatietosalausta: tietosi salataan selaimessasi ennen kuin ne saapuvat palvelimelle. Yhdistettyna Deploy Appin sertifikaattipohjaiseen todennukseen vain vahvistetut tiimin jasenet voivat kayttaa jaettuja resursseja.",
+          "title": "Turvallisuus ja luottamus"
+        }
+      },
+      "title": "CryptPad yksikon kaytossa"
+    }
+  },
   "home": {
-    "launch": "Avaa CryptPad!",
-    "featuresTitle": "CryptPadin ominaisuuksien kaytto"
+    "featuresTitle": "CryptPadin ominaisuuksien kaytto",
+    "launch": "Avaa CryptPad!"
   },
   "onboarding": {
     "back": "Takaisin",
@@ -15,106 +89,32 @@
     "progressSaved": "Perehdytyksen edistyminen tallennettu.",
     "review": "Mika on CryptPad?",
     "step": "Vaihe",
-    "title": "Mika on CryptPad?",
     "steps": {
-      "welcome": {
-        "title": "Tervetuloa CryptPadiin!",
-        "description": "CryptPad on turvallinen, paasta paahan salattu yhteistyoalusta, joka on integroitu Deploy Appiin. Sen avulla tiimisi voi luoda dokumentteja, taulukoita, esityksia ja paljon muuta — kaikki nollatietosalauksella."
-      },
-      "whatIs": {
-        "title": "Mika on CryptPad?",
-        "description": "CryptPad on avoimen lahdekoodin yhteistyotoimisto, jossa kaikki sisalto on salattua. Toisin kuin perinteiset pilvipalvelut, edes palvelin ei voi lukea tietojasi. Se tukee tekstidokumentteja, taulukoita, kanban-tauluja, esityksia, piirtotauluja ja paljon muuta."
-      },
-      "signIn": {
-        "title": "Kirjaudu Deploy Appilla",
-        "description": "CryptPad on integroitu Deploy Appin sertifikaattipohjaiseen todennukseen. Klikkaa 'Avaa CryptPad!' ja sinut todennetaan automaattisesti Deploy App -tunnuksillasi. Erillista tilia tai salasanaa ei tarvita."
+      "createDoc": {
+        "description": "Klikkaa '+'-painiketta hallintapaneelissa luodaksesi uuden dokumentin. Valitse tekstidokumenteista, koodieditorista, taulukoista, kanban-tauluista, esityksista, piirtotauluista, lomakkeista ja muista. Kaikki dokumentit salataan automaattisesti.",
+        "title": "Luo ensimmainen dokumentti"
       },
       "dashboard": {
-        "title": "CryptPad-hallintapaneeli",
-        "description": "Kirjautumisen jalkeen nakyviin tulee CryptPad-hallintapaneeli. Taalta voit luoda uusia dokumentteja, kayttaa viimeaikaisia tiedostoja, hallita CryptDrivea (tiedostojen tallennus) ja tehda yhteistyota tiimin jasenien kanssa."
-      },
-      "createDoc": {
-        "title": "Luo ensimmainen dokumentti",
-        "description": "Klikkaa '+'-painiketta hallintapaneelissa luodaksesi uuden dokumentin. Valitse tekstidokumenteista, koodieditorista, taulukoista, kanban-tauluista, esityksista, piirtotauluista, lomakkeista ja muista. Kaikki dokumentit salataan automaattisesti."
+        "description": "Kirjautumisen jalkeen nakyviin tulee CryptPad-hallintapaneeli. Taalta voit luoda uusia dokumentteja, kayttaa viimeaikaisia tiedostoja, hallita CryptDrivea (tiedostojen tallennus) ja tehda yhteistyota tiimin jasenien kanssa.",
+        "title": "CryptPad-hallintapaneeli"
       },
       "share": {
-        "title": "Jaa tiimisi kanssa",
-        "description": "Jakaaksesi dokumentin, klikkaa jakopainiketta tyokalupalkissa. Voit jakaa tietyille tiimin jasenille tai luoda linkin. Jaetut dokumentit tukevat reaaliaikaista yhteistyota — useat kayttajat voivat muokata samanaikaisesti."
-      }
-    }
-  },
-  "features": {
-    "docs": {
-      "title": "Kirjoita ja jaa dokumentteja",
-      "steps": {
-        "intro": {
-          "title": "Tekstidokumentit",
-          "description": "CryptPadin tekstieditorilla voit luoda muotoiltuja dokumentteja otsikoineen, luetteloineen, taulukoineen ja kuvineen. Kaikki on salattu paasta paahan."
-        },
-        "create": {
-          "title": "Dokumentin luominen",
-          "description": "Klikkaa hallintapaneelissa '+' ja valitse 'Teksti'. Uusi salattu dokumentti luodaan. Kayta tyokalupalkkia tekstin muotoiluun ja sisallon lisaamiseen."
-        },
-        "collaborate": {
-          "title": "Reaaliaikainen yhteistyo",
-          "description": "Jaa dokumentti tiimin jasenille reaaliaikaista yhteistyota varten. Naet muiden kayttajien kohdistimet ja muutokset reaaliaikaisesti."
-        },
-        "share": {
-          "title": "Jakaminen ja kayttooikeudet",
-          "description": "Klikkaa jakopainiketta luodaksesi linkin. Voit asettaa oikeudet 'Katso' (vain luku) tai 'Muokkaa' (taysi paasy)."
-        }
+        "description": "Jakaaksesi dokumentin, klikkaa jakopainiketta tyokalupalkissa. Voit jakaa tietyille tiimin jasenille tai luoda linkin. Jaetut dokumentit tukevat reaaliaikaista yhteistyota \u2014 useat kayttajat voivat muokata samanaikaisesti.",
+        "title": "Jaa tiimisi kanssa"
+      },
+      "signIn": {
+        "description": "CryptPad on integroitu Deploy Appin sertifikaattipohjaiseen todennukseen. Klikkaa 'Avaa CryptPad!' ja sinut todennetaan automaattisesti Deploy App -tunnuksillasi. Erillista tilia tai salasanaa ei tarvita.",
+        "title": "Kirjaudu Deploy Appilla"
+      },
+      "welcome": {
+        "description": "CryptPad on turvallinen, paasta paahan salattu yhteistyoalusta, joka on integroitu Deploy Appiin. Sen avulla tiimisi voi luoda dokumentteja, taulukoita, esityksia ja paljon muuta \u2014 kaikki nollatietosalauksella.",
+        "title": "Tervetuloa CryptPadiin!"
+      },
+      "whatIs": {
+        "description": "CryptPad on avoimen lahdekoodin yhteistyotoimisto, jossa kaikki sisalto on salattua. Toisin kuin perinteiset pilvipalvelut, edes palvelin ei voi lukea tietojasi. Se tukee tekstidokumentteja, taulukoita, kanban-tauluja, esityksia, piirtotauluja ja paljon muuta.",
+        "title": "Mika on CryptPad?"
       }
     },
-    "kanban": {
-      "title": "Tehtavataulut (Kanban)",
-      "steps": {
-        "intro": {
-          "title": "Kanban-tehtavataulut",
-          "description": "CryptPadin Kanban-sovelluksella voit jarjestaa tehtavia visuaalisesti taulujen, sarakkeiden ja korttien avulla."
-        },
-        "create": {
-          "title": "Kanban-taulun luominen",
-          "description": "Klikkaa '+' ja valitse 'Kanban'. Luo sarakkeita tyonkulun vaiheille ja lisaa kortteja tehtaville."
-        },
-        "manage": {
-          "title": "Tehtavien hallinta",
-          "description": "Klikkaa korttia lisataksesi tietoja. Vedä ja pudota kortteja sarakkeiden valilla paivittaaksesi tilaa."
-        }
-      }
-    },
-    "presentations": {
-      "title": "Esitykset",
-      "steps": {
-        "intro": {
-          "title": "Luo esityksia",
-          "description": "CryptPad sisaltaa Markdown-pohjaisen esitystyokalun, jolla voit luoda diaesityksia nopeasti."
-        },
-        "create": {
-          "title": "Diojen rakentaminen",
-          "description": "Klikkaa '+' ja valitse 'Dia'. Kayta Markdown-syntaksia diojen luomiseen — erota diat merkinnalla '---'."
-        },
-        "present": {
-          "title": "Esittaminen ja jakaminen",
-          "description": "Klikkaa 'Esita'-painiketta siirtyaksesi koko nayton esitystilaan. Navigoi dioja nuolinappaimilla."
-        }
-      }
-    },
-    "unitUse": {
-      "title": "CryptPad yksikon kaytossa",
-      "steps": {
-        "intro": {
-          "title": "CryptPad yksikolle",
-          "description": "CryptPad on kaytetty osana yksikon Deploy App -ymparistoa. Kaikki data pysyy omassa infrastruktuurissa, salattuna koko ajan."
-        },
-        "ops": {
-          "title": "Operatiivinen suunnittelu",
-          "description": "Kayta CryptPadia tehtavasuunnitteludokumentteihin, jaettuihin tilannekatsauksiin ja yhteistyoraportteihin."
-        },
-        "secure": {
-          "title": "Turvallisuus ja luottamus",
-          "description": "CryptPad kayttaa nollatietosalausta: tietosi salataan selaimessasi ennen kuin ne saapuvat palvelimelle. Yhdistettyna Deploy Appin sertifikaattipohjaiseen todennukseen vain vahvistetut tiimin jasenet voivat kayttaa jaettuja resursseja."
-        }
-      }
-    }
+    "title": "Mika on CryptPad?"
   }
 }

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { PRODUCT_SHORTNAME } from "@/App";
@@ -79,7 +79,7 @@ function ONBOARDING_STEPS(theme: string): OnboardingStep[] {
 const getOnboardingImage = (
   step: OnboardingStep,
   isMobile: boolean,
-  forceDesktop: boolean = false,
+  forceDesktop = false,
 ): string => {
   const imagePath = forceDesktop
     ? step.image
@@ -116,7 +116,7 @@ export function OnboardingGuide() {
   const [currentStep, setCurrentStep] = useState(0);
   const [completed, setCompleted] = useState<string[]>([]);
   const [showCompletion, setShowCompletion] = useState(false);
-  const [canReview, setCanReview] = useState(false);
+  const [, setCanReview] = useState(false);
   const [reviewMode, setReviewMode] = useState(false);
   const [imageEnlarged, setImageEnlarged] = useState(false);
   const [imageError, setImageError] = useState(false);
@@ -127,7 +127,7 @@ export function OnboardingGuide() {
   const { deployment } = useHealthCheck();
   const meta = useMeta();
 
-  const relevantSteps = ONBOARDING_STEPS(meta.theme);
+  const relevantSteps = useMemo(() => ONBOARDING_STEPS(meta.theme), [meta.theme]);
 
   useEffect(() => {
     if (isMobile === undefined || relevantSteps.length === 0) return;
@@ -145,7 +145,7 @@ export function OnboardingGuide() {
       await Promise.all([...inlineImages, ...desktopImages].map(preloadImage));
     };
 
-    preloadAllImages();
+    void preloadAllImages();
   }, [relevantSteps, isMobile]);
 
   const checkImageCache = useCallback((url: string) => {
@@ -190,7 +190,7 @@ export function OnboardingGuide() {
         setCanReview(true);
       }
     }
-  }, [meta.callsign, deployment]);
+  }, [meta.callsign, deployment, relevantSteps]);
 
   useEffect(() => {
     if (

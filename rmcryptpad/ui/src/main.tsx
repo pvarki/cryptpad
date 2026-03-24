@@ -42,7 +42,7 @@ const indexRoute = createRoute({
   path: "/",
   beforeLoad: () => {
     throw redirect({
-      //@ts-ignore
+      // @ts-expect-error: TanStack Router strict mode requires registered routes
       to: "/product/cryptpad",
     });
   },

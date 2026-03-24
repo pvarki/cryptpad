@@ -15,22 +15,24 @@ import fiLang from "./locales/fi.json";
 import svLang from "./locales/sv.json";
 import { MetaData, MetaProvider, CryptPadCardData } from "./lib/metadata";
 
-const RootLayoutComponent = () => (
-  <div className="max-w-5xl mx-auto p-6">
-    <Outlet />
-  </div>
-);
-
 export const PRODUCT_SHORTNAME = "cryptpad";
+
+function RootLayoutComponent() {
+  return (
+    <div className="max-w-5xl mx-auto p-6">
+      <Outlet />
+    </div>
+  );
+}
 
 interface Props {
   data: CryptPadCardData;
   meta: MetaData;
 }
 
-export default ({ data, meta }: Props) => {
+export default function CryptPadApp({ data, meta }: Props) {
   const [ready, setReady] = useState(false);
-  const { t, i18n } = useTranslation(PRODUCT_SHORTNAME);
+  const { i18n } = useTranslation(PRODUCT_SHORTNAME);
 
   const rootRoute = useMemo(() => createRootRoute({
     component: RootLayoutComponent,
@@ -59,7 +61,7 @@ export default ({ data, meta }: Props) => {
       setReady(true);
     }
 
-    load();
+    void load();
   }, [i18n]);
 
   if (!ready) return null;
@@ -69,4 +71,4 @@ export default ({ data, meta }: Props) => {
       <RouterProvider router={router} />
     </MetaProvider>
   );
-};
+}
