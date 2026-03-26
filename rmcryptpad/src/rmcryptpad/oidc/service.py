@@ -5,7 +5,6 @@ from __future__ import annotations
 import base64
 import datetime
 import hashlib
-import json
 import urllib.parse
 from dataclasses import dataclass, field
 from typing import Any
@@ -40,7 +39,7 @@ def _parse_basic_auth(header: str | None) -> tuple[str | None, str | None]:
         raw = base64.b64decode(header[6:].encode("utf-8")).decode("utf-8")
         client_id, client_secret = raw.split(":", 1)
         return client_id, client_secret
-    except Exception:  # pragma: no cover - defensive parse guard
+    except (ValueError, UnicodeDecodeError):  # pragma: no cover - defensive parse guard
         return None, None
 
 
@@ -58,9 +57,11 @@ class OIDCProvider:
 
     @property
     def issuer(self) -> str:
+        """Return the OIDC issuer URL."""
         return self.settings.oidc_issuer.rstrip("/")
 
     def discovery_document(self) -> dict[str, Any]:
+        """Return the OpenID Connect discovery document."""
         return {
             "issuer": self.issuer,
             "authorization_endpoint": f"{self.issuer}/oidc/authorize",
@@ -81,9 +82,11 @@ class OIDCProvider:
         }
 
     def jwks_document(self) -> dict[str, list[dict[str, Any]]]:
+        """Return the JSON Web Key Set."""
         return {"keys": [self.keys.public_jwk()]}
 
     async def authorize(self, request: Request) -> RedirectResponse:
+        """Handle an OIDC authorization request and redirect with a code."""
         cn = getattr(getattr(request.state, "mtlsdn", {}), "get", lambda *_: None)("CN")
         if not cn:
             raise HTTPException(
@@ -147,8 +150,8 @@ class OIDCProvider:
         return RedirectResponse(url=location, status_code=status.HTTP_302_FOUND)
 
     async def token(self, request: Request) -> dict[str, Any]:
-        body = await request.body()
-        form = _parse_form(body)
+        """Exchange an authorization code for access and ID tokens."""
+        form = _parse_form(await request.body())
         header_client_id, header_client_secret = _parse_basic_auth(
             request.headers.get("authorization")
         )
@@ -201,17 +204,14 @@ class OIDCProvider:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST, detail="invalid_grant"
             ) from None
-        access_payload = self._base_claims(
-            user.callsign, code_row.nonce, code_row.scope, "access"
-        )
-        id_payload = self._base_claims(
-            user.callsign, code_row.nonce, code_row.scope, "id"
-        )
+        jwt_header = {"alg": "RS256", "kid": self.keys.kid, "typ": "JWT"}
         access_token = self.keys.sign_jwt(
-            {"alg": "RS256", "kid": self.keys.kid, "typ": "JWT"}, access_payload
+            jwt_header,
+            self._base_claims(user.callsign, code_row.nonce, code_row.scope, "access"),
         )
         id_token = self.keys.sign_jwt(
-            {"alg": "RS256", "kid": self.keys.kid, "typ": "JWT"}, id_payload
+            jwt_header,
+            self._base_claims(user.callsign, code_row.nonce, code_row.scope, "id"),
         )
         return {
             "access_token": access_token,
@@ -222,6 +222,7 @@ class OIDCProvider:
         }
 
     async def userinfo(self, request: Request) -> dict[str, Any]:
+        """Return user claims for a valid access token."""
         authorization = request.headers.get("authorization") or ""
         if not authorization.startswith("Bearer "):
             raise HTTPException(

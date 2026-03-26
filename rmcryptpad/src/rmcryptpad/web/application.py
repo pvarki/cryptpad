@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -27,7 +28,8 @@ LOGGER = logging.getLogger(__name__)
 
 
 @asynccontextmanager
-async def app_lifespan(app: FastAPI):
+async def app_lifespan(app: FastAPI) -> AsyncIterator[None]:
+    """Initialize the database and OIDC key manager on startup."""
     _ = app
     await asyncio.gather(init_db())
     OIDCKeyManager.singleton()

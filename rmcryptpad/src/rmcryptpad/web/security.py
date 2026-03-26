@@ -59,7 +59,7 @@ def require_verified_mtls_header(request: Request) -> str:
 
 def get_client_cn(request: Request) -> str:
     """Return the forwarded client CN."""
-    payload = getattr(request.state, "mtlsdn", None)
+    payload: dict[str, str] | None = getattr(request.state, "mtlsdn", None)
     if payload and payload.get("CN"):
         return payload["CN"]
     dn = require_verified_mtls_header(request)

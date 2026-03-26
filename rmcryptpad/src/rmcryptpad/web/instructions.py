@@ -19,5 +19,8 @@ async def user_instructions(
     return InstructionsResponse(
         callsign=user.callsign,
         language=language,
-        instructions="Open CryptPad through the Deploy App mTLS host and keep the certificate-backed account in sync.",
+        instructions=(
+            "Open CryptPad through the Deploy App mTLS host"
+            " and keep the certificate-backed account in sync."
+        ),
     )

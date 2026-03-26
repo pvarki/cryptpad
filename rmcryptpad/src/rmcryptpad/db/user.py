@@ -17,7 +17,9 @@ from .errors import Deleted, NotFound
 def fingerprint_pem(cert_pem: str) -> str:
     """Generate a stable fingerprint for a stored certificate PEM."""
     certificate = x509.load_pem_x509_certificate(cert_pem.encode("utf-8"))
-    return certificate.fingerprint(hashes.SHA1()).hex()
+    return certificate.fingerprint(
+        hashes.SHA1()  # nosec B303 - x509 fingerprint convention
+    ).hex()
 
 
 class User(ORMBaseModel, table=True):

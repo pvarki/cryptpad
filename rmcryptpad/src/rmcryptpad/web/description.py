@@ -22,6 +22,7 @@ def _description_text(language: str) -> str:
 async def return_product_description(
     language: str, request: Request
 ) -> ProductDescription:
+    """Return a localized product description."""
     require_rm_caller(request)
     return ProductDescription(
         shortname="cryptpad",
@@ -36,6 +37,7 @@ async def return_product_description(
 async def return_product_description_extended(
     language: str, request: Request
 ) -> ProductDescriptionExtended:
+    """Return a localized product description with component metadata."""
     require_rm_caller(request)
     settings = RMCryptPadSettings.singleton()
     return ProductDescriptionExtended(
