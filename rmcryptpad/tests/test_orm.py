@@ -5,10 +5,9 @@ from __future__ import annotations
 import datetime
 
 import pytest
+from conftest import build_cert_pem
 from cryptography import x509
-from cryptography.hazmat.primitives import hashes, serialization
-from cryptography.hazmat.primitives.asymmetric import rsa
-from cryptography.x509.oid import NameOID
+from cryptography.hazmat.primitives import hashes
 
 from rmcryptpad.db.errors import Deleted
 from rmcryptpad.db.oidc_code import OIDCAuthorizationCode
@@ -16,40 +15,12 @@ from rmcryptpad.db.product import Product
 from rmcryptpad.db.user import User, fingerprint_pem
 
 
-def _build_test_cert_pem(common_name: str = "virta.example.local") -> tuple[str, str]:
-    """Create a deterministic-ish PEM certificate for fingerprint tests."""
-    key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
-    subject = issuer = x509.Name([x509.NameAttribute(NameOID.COMMON_NAME, common_name)])
-    cert = (
-        x509.CertificateBuilder()
-        .subject_name(subject)
-        .issuer_name(issuer)
-        .public_key(key.public_key())
-        .serial_number(x509.random_serial_number())
-        .not_valid_before(
-            datetime.datetime.now(datetime.UTC) - datetime.timedelta(days=1)
-        )
-        .not_valid_after(
-            datetime.datetime.now(datetime.UTC) + datetime.timedelta(days=30)
-        )
-        .sign(key, hashes.SHA256())
-    )
-    pem = cert.public_bytes(serialization.Encoding.PEM).decode("utf-8")
-    return pem, cert.fingerprint(hashes.SHA1()).hex()
-
-
-def _build_test_cert_only(common_name: str) -> str:
-    """Create a PEM certificate for ORM persistence tests."""
-    cert_pem, _ = _build_test_cert_pem(common_name)
-    return cert_pem
-
-
 @pytest.mark.asyncio
 async def test_callsign_is_identity(dbinstance: None) -> None:
     """Refreshing the same callsign should update the same row."""
     _ = dbinstance
-    first_cert = _build_test_cert_only("VIRTA-1")
-    second_cert = _build_test_cert_only("VIRTA-1-refresh")
+    first_cert = build_cert_pem("VIRTA-1")
+    second_cert = build_cert_pem("VIRTA-1-refresh")
     created = await User.create_or_update(
         callsign="VIRTA-1",
         rmuuid="uuid-a",
@@ -72,8 +43,8 @@ async def test_user_admin_state_is_preserved_when_not_explicitly_changed(
 ) -> None:
     """Existing admin state should survive a normal callsign refresh."""
     _ = dbinstance
-    first_cert = _build_test_cert_only("VIRTA-ADMIN")
-    second_cert = _build_test_cert_only("VIRTA-ADMIN-REFRESH")
+    first_cert = build_cert_pem("VIRTA-ADMIN")
+    second_cert = build_cert_pem("VIRTA-ADMIN-REFRESH")
     created = await User.create_or_update(
         callsign="VIRTA-ADMIN",
         rmuuid="uuid-admin",
@@ -95,8 +66,8 @@ async def test_user_admin_state_is_preserved_when_not_explicitly_changed(
 async def test_user_admin_state_changes_when_requested(dbinstance: None) -> None:
     """Explicit admin changes should still be applied."""
     _ = dbinstance
-    first_cert = _build_test_cert_only("VIRTA-ADMIN-2")
-    second_cert = _build_test_cert_only("VIRTA-ADMIN-2-REFRESH")
+    first_cert = build_cert_pem("VIRTA-ADMIN-2")
+    second_cert = build_cert_pem("VIRTA-ADMIN-2-REFRESH")
     await User.create_or_update(
         callsign="VIRTA-ADMIN-2",
         rmuuid="uuid-admin-2",
@@ -118,9 +89,11 @@ async def test_user_admin_state_changes_when_requested(dbinstance: None) -> None
 async def test_cert_fingerprint_matches_certificate_bytes(dbinstance: None) -> None:
     """Stored certificate fingerprints should match the actual certificate fingerprint."""
     _ = dbinstance
-    cert_pem, expected_fingerprint = _build_test_cert_pem()
+    cert_pem = build_cert_pem("virta.example.local")
+    cert = x509.load_pem_x509_certificate(cert_pem.encode("utf-8"))
+    expected = cert.fingerprint(hashes.SHA1()).hex()  # nosec B303
 
-    assert fingerprint_pem(cert_pem) == expected_fingerprint
+    assert fingerprint_pem(cert_pem) == expected
 
 
 @pytest.mark.asyncio
@@ -130,12 +103,12 @@ async def test_new_callsign_stays_separate(dbinstance: None) -> None:
     await User.create_or_update(
         callsign="VIRTA-1",
         rmuuid="uuid-a",
-        cert_pem=_build_test_cert_only("VIRTA-1"),
+        cert_pem=build_cert_pem("VIRTA-1"),
     )
     await User.create_or_update(
         callsign="VIRTA-2",
         rmuuid="uuid-a",
-        cert_pem=_build_test_cert_only("VIRTA-2"),
+        cert_pem=build_cert_pem("VIRTA-2"),
     )
 
     assert (await User.by_callsign("VIRTA-1")).callsign == "VIRTA-1"

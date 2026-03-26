@@ -3,47 +3,18 @@
 from __future__ import annotations
 
 import base64
-import datetime
 import hashlib
-import json
 import urllib.parse
 from pathlib import Path
 
 import pytest
-from cryptography import x509
-from cryptography.hazmat.primitives import hashes, serialization
-from cryptography.hazmat.primitives.asymmetric import rsa
-from cryptography.x509.oid import NameOID
+from conftest import build_cert_pem, rm_headers
 from fastapi.testclient import TestClient
 
 from rmcryptpad.config import RMCryptPadSettings
 from rmcryptpad.db.user import fingerprint_pem
 from rmcryptpad.oidc.keys import OIDCKeyManager
 from rmcryptpad.web.application import get_app_no_init
-
-
-def _build_cert_pem(common_name: str) -> str:
-    key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
-    subject = issuer = x509.Name([x509.NameAttribute(NameOID.COMMON_NAME, common_name)])
-    cert = (
-        x509.CertificateBuilder()
-        .subject_name(subject)
-        .issuer_name(issuer)
-        .public_key(key.public_key())
-        .serial_number(x509.random_serial_number())
-        .not_valid_before(
-            datetime.datetime.now(datetime.UTC) - datetime.timedelta(days=1)
-        )
-        .not_valid_after(
-            datetime.datetime.now(datetime.UTC) + datetime.timedelta(days=30)
-        )
-        .sign(key, hashes.SHA256())
-    )
-    return cert.public_bytes(serialization.Encoding.PEM).decode("utf-8")
-
-
-def _rm_headers() -> dict[str, str]:
-    return {"X-ClientCert-DN": "CN=rasenmaeher,O=RM", "X-SSL-Client-Verify": "SUCCESS"}
 
 
 def _user_headers(callsign: str) -> dict[str, str]:
@@ -64,8 +35,8 @@ def _configure_oidc(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     monkeypatch.setenv("RMCRYPTPAD_OIDC_CLIENT_SECRET", "cryptpad-secret")
     monkeypatch.setenv("RMCRYPTPAD_OIDC_CODE_TTL_SECONDS", "300")
     monkeypatch.setenv("RMCRYPTPAD_OIDC_TOKEN_TTL_SECONDS", "3600")
-    RMCryptPadSettings._singleton = None
-    OIDCKeyManager._singleton = None
+    RMCryptPadSettings._singleton = None  # pylint: disable=protected-access
+    OIDCKeyManager._singleton = None  # pylint: disable=protected-access
 
 
 def _pkce_pair() -> tuple[str, str]:
@@ -79,8 +50,9 @@ def _pkce_pair() -> tuple[str, str]:
 
 
 def test_discovery_document_returns_expected_urls(
-    dbinstance: None, monkeypatch: pytest.MonkeyPatch, tmp_path
+    dbinstance: None, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
+    """Verify the OIDC discovery document contains correct endpoint URLs."""
     _ = dbinstance
     _configure_oidc(monkeypatch, tmp_path)
     app = get_app_no_init()
@@ -98,18 +70,19 @@ def test_discovery_document_returns_expected_urls(
 
 
 def test_authorize_rejects_missing_or_revoked_active_callsign(
-    dbinstance: None, monkeypatch: pytest.MonkeyPatch, tmp_path
+    dbinstance: None, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
+    """Verify authorize rejects unknown and revoked callsigns."""
     _ = dbinstance
     _configure_oidc(monkeypatch, tmp_path)
     app = get_app_no_init()
-    cert_pem = _build_cert_pem("VIRTA-REVOKED")
+    cert_pem = build_cert_pem("VIRTA-REVOKED")
 
     with TestClient(app) as client:
         assert (
             client.post(
                 "/api/v1/users/created",
-                headers=_rm_headers(),
+                headers=rm_headers(),
                 json={
                     "uuid": "uuid-1",
                     "callsign": "VIRTA-REVOKED",
@@ -121,7 +94,7 @@ def test_authorize_rejects_missing_or_revoked_active_callsign(
         assert (
             client.post(
                 "/api/v1/users/revoked",
-                headers=_rm_headers(),
+                headers=rm_headers(),
                 json={
                     "uuid": "uuid-1",
                     "callsign": "VIRTA-REVOKED",
@@ -151,19 +124,20 @@ def test_authorize_rejects_missing_or_revoked_active_callsign(
 
 
 def test_authorize_issues_code_for_active_callsign(
-    dbinstance: None, monkeypatch: pytest.MonkeyPatch, tmp_path
+    dbinstance: None, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
+    """Verify authorize redirects with an authorization code for active users."""
     _ = dbinstance
     _configure_oidc(monkeypatch, tmp_path)
     app = get_app_no_init()
-    cert_pem = _build_cert_pem("VIRTA-1")
+    cert_pem = build_cert_pem("VIRTA-1")
     verifier, challenge = _pkce_pair()
 
     with TestClient(app) as client:
         assert (
             client.post(
                 "/api/v1/users/created",
-                headers=_rm_headers(),
+                headers=rm_headers(),
                 json={"uuid": "uuid-1", "callsign": "VIRTA-1", "x509cert": cert_pem},
             ).status_code
             == 200
@@ -195,20 +169,21 @@ def test_authorize_issues_code_for_active_callsign(
 
 
 def test_authorize_rejects_mismatched_certificate_fingerprint(
-    dbinstance: None, monkeypatch: pytest.MonkeyPatch, tmp_path
+    dbinstance: None, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
+    """Verify authorize rejects requests with wrong certificate fingerprint."""
     _ = dbinstance
     _configure_oidc(monkeypatch, tmp_path)
     app = get_app_no_init()
-    active_cert = _build_cert_pem("VIRTA-1")
-    wrong_cert = _build_cert_pem("VIRTA-1")
+    active_cert = build_cert_pem("VIRTA-1")
+    wrong_cert = build_cert_pem("VIRTA-1")
     _, challenge = _pkce_pair()
 
     with TestClient(app) as client:
         assert (
             client.post(
                 "/api/v1/users/created",
-                headers=_rm_headers(),
+                headers=rm_headers(),
                 json={"uuid": "uuid-1", "callsign": "VIRTA-1", "x509cert": active_cert},
             ).status_code
             == 200
@@ -236,19 +211,20 @@ def test_authorize_rejects_mismatched_certificate_fingerprint(
 
 
 def test_authorize_rejects_wrong_callsign(
-    dbinstance: None, monkeypatch: pytest.MonkeyPatch, tmp_path
+    dbinstance: None, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
+    """Verify authorize rejects a callsign that doesn't match any user."""
     _ = dbinstance
     _configure_oidc(monkeypatch, tmp_path)
     app = get_app_no_init()
-    active_cert = _build_cert_pem("VIRTA-1")
+    active_cert = build_cert_pem("VIRTA-1")
     wrong_headers = _user_headers("VIRTA-2")
 
     with TestClient(app) as client:
         assert (
             client.post(
                 "/api/v1/users/created",
-                headers=_rm_headers(),
+                headers=rm_headers(),
                 json={"uuid": "uuid-1", "callsign": "VIRTA-1", "x509cert": active_cert},
             ).status_code
             == 200
@@ -272,19 +248,20 @@ def test_authorize_rejects_wrong_callsign(
 
 
 def test_token_exchange_and_userinfo_work_with_pkce_and_basic_auth(
-    dbinstance: None, monkeypatch: pytest.MonkeyPatch, tmp_path
+    dbinstance: None, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
+    """Verify full OIDC flow: authorize, token exchange, and userinfo."""
     _ = dbinstance
     _configure_oidc(monkeypatch, tmp_path)
     app = get_app_no_init()
-    cert_pem = _build_cert_pem("VIRTA-1")
+    cert_pem = build_cert_pem("VIRTA-1")
     verifier, challenge = _pkce_pair()
 
     with TestClient(app) as client:
         assert (
             client.post(
                 "/api/v1/users/created",
-                headers=_rm_headers(),
+                headers=rm_headers(),
                 json={"uuid": "uuid-1", "callsign": "VIRTA-1", "x509cert": cert_pem},
             ).status_code
             == 200
@@ -339,19 +316,20 @@ def test_token_exchange_and_userinfo_work_with_pkce_and_basic_auth(
 
 
 def test_token_rejects_reuse_and_invalid_code(
-    dbinstance: None, monkeypatch: pytest.MonkeyPatch, tmp_path
+    dbinstance: None, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
+    """Verify authorization codes cannot be reused and invalid codes are rejected."""
     _ = dbinstance
     _configure_oidc(monkeypatch, tmp_path)
     app = get_app_no_init()
-    cert_pem = _build_cert_pem("VIRTA-1")
+    cert_pem = build_cert_pem("VIRTA-1")
     verifier, challenge = _pkce_pair()
 
     with TestClient(app) as client:
         assert (
             client.post(
                 "/api/v1/users/created",
-                headers=_rm_headers(),
+                headers=rm_headers(),
                 json={"uuid": "uuid-1", "callsign": "VIRTA-1", "x509cert": cert_pem},
             ).status_code
             == 200
