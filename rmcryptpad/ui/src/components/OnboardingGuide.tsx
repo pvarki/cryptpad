@@ -313,8 +313,11 @@ export function OnboardingGuide() {
   }
 
   const contentComponent = (
-    <div className="flex flex-col h-full w-full">
-      <div className="flex-1 overflow-y-auto p-4 md:p-6 flex flex-col">
+    <div className="flex flex-col h-full max-h-[85vh] w-full overflow-hidden">
+      <DialogTitle className="sr-only">
+        {t("onboarding.title") || "What is CryptPad?"}
+      </DialogTitle>
+      <div className="flex-1 overflow-y-auto min-h-0 p-4 md:p-6 flex flex-col">
         <div className="flex flex-col gap-6">
           <div className="space-y-2">
             <div className="flex items-center gap-2">
@@ -383,21 +386,18 @@ export function OnboardingGuide() {
         </div>
       </div>
 
-      <div className="border-t px-4 py-4 flex gap-3 bg-background">
+      <div className="p-4 border-t bg-background flex gap-3 shrink-0 mt-auto">
         <Button
           variant="outline"
           onClick={handlePrev}
           disabled={currentStep === 0}
-          className="flex-1 h-12 bg-transparent cursor-pointer"
+          className="flex-1 cursor-pointer"
         >
-          <ChevronLeft className="w-4 h-4 mr-2" />
-          {t("onboarding.back") || "Back"}
+          <ChevronLeft className="w-4 h-4 mr-2" /> {t("onboarding.back")}
         </Button>
-
         <Button
           onClick={handleComplete}
-          variant="outline"
-          className="flex-1 h-12 bg-primary-light hover:bg-primary-light/90 text-primary-light-foreground cursor-pointer"
+          className="flex-1 bg-primary-light hover:bg-primary-light/90 text-white cursor-pointer"
         >
           {currentStep === relevantSteps.length - 1
             ? t("onboarding.finish")
@@ -406,7 +406,7 @@ export function OnboardingGuide() {
         </Button>
       </div>
 
-      <div className="bg-primary-light/20 relative h-2 w-full overflow-hidden rounded-full mt-6 md:mt-0 ">
+      <div className="h-1.5 w-full bg-muted shrink-0">
         <div
           className="bg-primary-light h-2"
           style={{ width: `${progress}%` }}
@@ -438,14 +438,7 @@ export function OnboardingGuide() {
       <>
         {enlargedImageModal}
         <Drawer open={open} onOpenChange={handleOpenChange}>
-          <DrawerContent className="flex flex-col max-h-[95vh] bg-background border-t">
-            <div className="w-full h-full flex flex-col">
-              <DialogTitle className="sr-only">
-                {t("onboarding.title") || "What is CryptPad?"}
-              </DialogTitle>
-              {contentComponent}
-            </div>
-          </DrawerContent>
+          <DrawerContent>{contentComponent}</DrawerContent>
         </Drawer>
       </>
     );
@@ -455,13 +448,8 @@ export function OnboardingGuide() {
     <>
       {enlargedImageModal}
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className="flex flex-col max-h-[90vh] w-full max-w-2xl bg-background">
-          <div className="w-full h-full flex flex-col">
-            <DialogTitle className="sr-only">
-              {t("onboarding.title") || "What is CryptPad?"}
-            </DialogTitle>
-            {contentComponent}
-          </div>
+        <DialogContent className="max-w-2xl max-h-[90vh] p-0 flex flex-col overflow-hidden outline-none">
+          {contentComponent}
         </DialogContent>
       </Dialog>
     </>

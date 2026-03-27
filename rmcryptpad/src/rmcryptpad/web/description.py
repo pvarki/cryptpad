@@ -43,7 +43,7 @@ async def return_product_description_extended(
     return ProductDescriptionExtended(
         shortname="cryptpad",
         title="CryptPad",
-        icon=None,
+        icon="/ui/cryptpad/cryptpad-mark.svg",
         description=_description_text(language),
         language=language,
         docs=settings.docs_url,
