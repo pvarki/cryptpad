@@ -1,7 +1,16 @@
 (() => {
   const factory = (AppConfig) => {
-    AppConfig.loginSalt = 'ac73deb9ef8944e51b2d4feafc2d5713764c26911aa12fd70168cc8be2754a33'; // pragma: allowlist secret
+    AppConfig.loginSalt = '__LOGIN_SALT__'; // replaced at container startup
     AppConfig.minimumPasswordLength = 8;
+    AppConfig.defaultDarkTheme = 'true';
+
+    // Hide donation/crowdfunding prompts
+    AppConfig.disableFeedback = true;
+
+    // Hide footer links that don't apply to a private deployment
+    AppConfig.source = false;
+    AppConfig.roadmap = false;
+
     return AppConfig;
   };
 
