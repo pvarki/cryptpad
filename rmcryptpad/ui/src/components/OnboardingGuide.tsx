@@ -29,49 +29,43 @@ interface OnboardingStep {
   mobileImage?: string;
 }
 
-function ONBOARDING_STEPS(theme: string): OnboardingStep[] {
+function ONBOARDING_STEPS(): OnboardingStep[] {
   return [
     {
       id: "welcome",
       title: "onboarding.steps.welcome.title",
       description: "onboarding.steps.welcome.description",
-      image: `/ui/cryptpad/assets/Onboarding/${theme}/ON_BOARDING_WELCOME.png`,
-      mobileImage: `/ui/cryptpad/assets/Onboarding/${theme}/mobile/ON_BOARDING_WELCOME.png`,
+      image: `/ui/cryptpad/assets/cryptpad1.png`,
     },
     {
       id: "what_is_cryptpad",
       title: "onboarding.steps.whatIs.title",
       description: "onboarding.steps.whatIs.description",
-      image: `/ui/cryptpad/assets/Onboarding/${theme}/ON_BOARDING_WHAT_IS.png`,
-      mobileImage: `/ui/cryptpad/assets/Onboarding/${theme}/mobile/ON_BOARDING_WHAT_IS.png`,
+      image: `/ui/cryptpad/assets/e2e.png`,
     },
     {
       id: "sign_in",
       title: "onboarding.steps.signIn.title",
       description: "onboarding.steps.signIn.description",
-      image: `/ui/cryptpad/assets/Onboarding/${theme}/ON_BOARDING_SIGN_IN.png`,
-      mobileImage: `/ui/cryptpad/assets/Onboarding/${theme}/mobile/ON_BOARDING_SIGN_IN.png`,
+      image: `/ui/cryptpad/assets/cryptpadlogin.png`,
     },
     {
       id: "dashboard",
       title: "onboarding.steps.dashboard.title",
       description: "onboarding.steps.dashboard.description",
-      image: `/ui/cryptpad/assets/Onboarding/${theme}/ON_BOARDING_DASHBOARD.png`,
-      mobileImage: `/ui/cryptpad/assets/Onboarding/${theme}/mobile/ON_BOARDING_DASHBOARD.png`,
+      image: `/ui/cryptpad/assets/cryptpad2.png`,
     },
     {
       id: "create_document",
       title: "onboarding.steps.createDoc.title",
       description: "onboarding.steps.createDoc.description",
-      image: `/ui/cryptpad/assets/Onboarding/${theme}/ON_BOARDING_CREATE_DOC.png`,
-      mobileImage: `/ui/cryptpad/assets/Onboarding/${theme}/mobile/ON_BOARDING_CREATE_DOC.png`,
+      image: `/ui/cryptpad/assets/cryptpad3.png`,
     },
     {
       id: "share",
       title: "onboarding.steps.share.title",
       description: "onboarding.steps.share.description",
-      image: `/ui/cryptpad/assets/Onboarding/${theme}/ON_BOARDING_SHARE.png`,
-      mobileImage: `/ui/cryptpad/assets/Onboarding/${theme}/mobile/ON_BOARDING_SHARE.png`,
+      image: `/ui/cryptpad/assets/share.png`,
     },
   ];
 }
@@ -127,10 +121,7 @@ export function OnboardingGuide() {
   const { deployment } = useHealthCheck();
   const meta = useMeta();
 
-  const relevantSteps = useMemo(
-    () => ONBOARDING_STEPS(meta.theme),
-    [meta.theme],
-  );
+  const relevantSteps = useMemo(() => ONBOARDING_STEPS(), []);
 
   useEffect(() => {
     if (isMobile === undefined || relevantSteps.length === 0) return;

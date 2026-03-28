@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { PRODUCT_SHORTNAME } from "@/App";
@@ -45,20 +45,35 @@ export function FeatureGuide({
     [isMobile],
   );
 
-  const handleNext = () => {
+  // Preload the next step's image so it's ready before the user clicks Next
+  useEffect(() => {
     if (currentStep < steps.length - 1) {
-      setCurrentStep(currentStep + 1);
-      setImageError(false);
-      setImageLoading(true);
+      const nextUrl = getImage(steps[currentStep + 1]);
+      if (!imageCache.has(nextUrl)) {
+        const img = new Image();
+        img.onload = () =>
+          imageCache.set(nextUrl, { loaded: true, error: false });
+        img.onerror = () =>
+          imageCache.set(nextUrl, { loaded: true, error: true });
+        img.src = nextUrl;
+      }
     }
+  }, [currentStep, steps, getImage]);
+
+  const goToStep = (index: number) => {
+    const url = getImage(steps[index]);
+    const cached = imageCache.get(url);
+    setCurrentStep(index);
+    setImageError(cached?.error ?? false);
+    setImageLoading(!cached);
+  };
+
+  const handleNext = () => {
+    if (currentStep < steps.length - 1) goToStep(currentStep + 1);
   };
 
   const handlePrev = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
-      setImageError(false);
-      setImageLoading(true);
-    }
+    if (currentStep > 0) goToStep(currentStep - 1);
   };
 
   const handleFinish = () => {
@@ -122,7 +137,6 @@ export function FeatureGuide({
                 <img
                   src={imageUrl}
                   alt={t(step.title)}
-                  loading="lazy"
                   className={cn(
                     "w-full h-full object-contain [image-rendering:-webkit-optimize-contrast]",
                     imageLoading && "hidden",
