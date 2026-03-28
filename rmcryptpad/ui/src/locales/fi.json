@@ -40,7 +40,7 @@
           "title": "Kanban-tehtävätaulut"
         },
         "manage": {
-          "description": "Klikkaa korttia lisätäksesi tietoja. Voit lisätä myös kuvia kortteihin. Ved\u00e4 ja pudota kortteja sarakkeiden valilla päivittääksesi tilaa.",
+          "description": "Klikkaa korttia lisätäksesi tietoja. Voit lisätä myös kuvia kortteihin. Vedä ja pudota kortteja sarakkeiden valilla päivittääksesi tilaa.",
           "title": "Tehtäväkorttien hallinta"
         },
         "situation": {
@@ -65,7 +65,7 @@
           "title": "Luo esityksiä"
         },
         "present": {
-          "description": "Kirjoita diasi tekstinä vasemmalle kuvan osoittamalla tavalla. Diojen erotus tapahtuu merkinnällä '---'.Klikkaa 'Esitä'-painiketta siirty'ksesi koko nayton esitystilaan. Navigoi dioja nuolinäppäimilla.",
+          "description": "Kirjoita diasi tekstinä vasemmalle kuvan osoittamalla tavalla. Diojen erotus tapahtuu merkinnällä '---'.Klikkaa 'Esitä'-painiketta siirtyäksesi koko nayton esitystilaan. Navigoi dioja nuolinäppäimilla.",
           "title": "Luo ja esitä dioja"
         }
       },
@@ -130,7 +130,7 @@
           "title": "Siirtyminen seuraavaan tehtävään - varmuuskopioi tiedot"
         }
       },
-      "title": "CryptPad yksikon kaytossa"
+      "title": "CryptPad yksikön käytössa"
     }
   },
   "home": {
@@ -161,7 +161,7 @@
         "title": "CryptPad-hallintapaneeli"
       },
       "share": {
-        "description": "Jakaaksesi dokumentin, klikkaa jakopainiketta työkalupalkissa. Voit jakaa tietyille tiimin jäsenille tai luoda linkin. Jaetut dokumentit tukevat reaaliaikaista yhteistyöta \u2014 useat käyttäjät voivat muokata samanaikaisesti.",
+        "description": "Jakaaksesi dokumentin, klikkaa jakopainiketta työkalupalkissa. Voit jakaa tietyille tiimin jäsenille tai luoda linkin. Jaetut dokumentit tukevat reaaliaikaista yhteistyötä: useat käyttäjät voivat muokata samanaikaisesti.",
         "title": "Jaa tiimisi kanssa"
       },
       "signIn": {

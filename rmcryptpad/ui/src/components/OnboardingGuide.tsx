@@ -47,7 +47,7 @@ function ONBOARDING_STEPS(): OnboardingStep[] {
       id: "sign_in",
       title: "onboarding.steps.signIn.title",
       description: "onboarding.steps.signIn.description",
-      image: `/ui/cryptpad/assets/cryptpadlogin.png`,
+      image: `/ui/cryptpad/assets/cryptpad4.png`,
     },
     {
       id: "dashboard",
