@@ -88,7 +88,11 @@ class OIDCAuthorizationCode(ORMBaseModel, table=True):
                 raise NotFound()
             expires_at = _as_utc(obj.expires_at)
             used_at = _as_utc(obj.used_at) if obj.used_at else None
-            if obj.deleted or used_at or expires_at <= datetime.datetime.now(datetime.UTC):
+            if (
+                obj.deleted
+                or used_at
+                or expires_at <= datetime.datetime.now(datetime.UTC)
+            ):
                 raise Deleted()
             obj.used_at = datetime.datetime.now(datetime.UTC)
             session.add(obj)

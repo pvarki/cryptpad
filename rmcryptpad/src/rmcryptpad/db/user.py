@@ -17,7 +17,9 @@ from .errors import Deleted, NotFound
 def fingerprint_pem(cert_pem: str) -> str:
     """Generate a stable fingerprint for a stored certificate PEM."""
     certificate = x509.load_pem_x509_certificate(cert_pem.encode("utf-8"))
-    return certificate.fingerprint(hashes.SHA1()).hex()
+    return certificate.fingerprint(
+        hashes.SHA1()  # nosec B303 - x509 fingerprint convention
+    ).hex()
 
 
 class User(ORMBaseModel, table=True):
@@ -25,10 +27,16 @@ class User(ORMBaseModel, table=True):
 
     __tablename__ = "users"
 
-    callsign: str = Field(index=True, unique=True, description="Canonical CryptPad identity")
-    rmuuid: str = Field(index=True, description="Latest RM UUID observed for this callsign")
+    callsign: str = Field(
+        index=True, unique=True, description="Canonical CryptPad identity"
+    )
+    rmuuid: str = Field(
+        index=True, description="Latest RM UUID observed for this callsign"
+    )
     cert_pem: str = Field(description="Current client certificate PEM")
-    cert_fingerprint: str = Field(index=True, description="SHA-256 fingerprint of cert_pem")
+    cert_fingerprint: str = Field(
+        index=True, description="SHA-256 fingerprint of cert_pem"
+    )
     is_rmadmin: bool = Field(default=False)
     revoked: datetime.datetime | None = Field(default=None, index=True)
 

@@ -31,7 +31,9 @@ async def init_db() -> None:
         await asyncio.sleep(random.random() * 1.5)  # nosec
         lock.acquire(timeout=0.0)
         with wrapper.engine.connect() as connection:
-            if not sa.inspect(connection).has_schema(ORMBaseModel.__table_args__["schema"]):
+            if not sa.inspect(connection).has_schema(
+                ORMBaseModel.__table_args__["schema"]
+            ):
                 connection.execute(CreateSchema(ORMBaseModel.__table_args__["schema"]))
                 connection.commit()
             SQLModel.metadata.create_all(connection)

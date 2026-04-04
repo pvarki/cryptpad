@@ -19,7 +19,10 @@ def _description_text(language: str) -> str:
 
 
 @router.get("/description/{language}", response_model=ProductDescription)
-async def return_product_description(language: str, request: Request) -> ProductDescription:
+async def return_product_description(
+    language: str, request: Request
+) -> ProductDescription:
+    """Return a localized product description."""
     require_rm_caller(request)
     return ProductDescription(
         shortname="cryptpad",
@@ -31,13 +34,16 @@ async def return_product_description(language: str, request: Request) -> Product
 
 
 @router_v2.get("/description/{language}", response_model=ProductDescriptionExtended)
-async def return_product_description_extended(language: str, request: Request) -> ProductDescriptionExtended:
+async def return_product_description_extended(
+    language: str, request: Request
+) -> ProductDescriptionExtended:
+    """Return a localized product description with component metadata."""
     require_rm_caller(request)
     settings = RMCryptPadSettings.singleton()
     return ProductDescriptionExtended(
         shortname="cryptpad",
         title="CryptPad",
-        icon=None,
+        icon="/ui/cryptpad/cryptpad-mark.svg",
         description=_description_text(language),
         language=language,
         docs=settings.docs_url,

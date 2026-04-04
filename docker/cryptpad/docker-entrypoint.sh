@@ -28,6 +28,24 @@ if [ ! -f "$CPAD_CONF" ]; then
   cp /cryptpad/config/config.example.js "$CPAD_CONF"
 fi
 
+# ── loginSalt: generate once, persist in data volume ─────────────────────────
+CPAD_SALT_FILE="/cryptpad/data/.login-salt"
+if [ ! -f "$CPAD_SALT_FILE" ]; then
+  node -e "process.stdout.write(require('crypto').randomBytes(32).toString('hex'))" > "$CPAD_SALT_FILE"
+  echo "Generated new loginSalt (stored in $CPAD_SALT_FILE)" >&2
+fi
+LOGIN_SALT="$(cat "$CPAD_SALT_FILE")"
+
+# ── Assemble /cryptpad/customize from read-only source with salt injected ────
+CPAD_CUSTOMIZE_SRC="/cryptpad/customize.local"
+if [ -d "$CPAD_CUSTOMIZE_SRC" ]; then
+  cp -a "$CPAD_CUSTOMIZE_SRC"/. /cryptpad/customize/
+  if [ -f /cryptpad/customize/application_config.js ]; then
+    sed -i "s/__LOGIN_SALT__/${LOGIN_SALT}/" /cryptpad/customize/application_config.js
+    echo "Injected loginSalt into application_config.js" >&2
+  fi
+fi
+
 mkdir -p "$CPAD_DECREE_DIR"
 if [ ! -f "$CPAD_DECREE_FILE" ] || ! grep -q '"SET_BEARER_SECRET"' "$CPAD_DECREE_FILE"; then
   bearer_secret="$(node -e "process.stdout.write(require('crypto').randomBytes(32).toString('base64'))")"

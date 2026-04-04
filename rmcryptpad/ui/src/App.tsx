@@ -1,59 +1,85 @@
+import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
-  buildCardDetails,
-  buildLoginUrl,
-  type CryptPadCardData,
-  type CryptPadCardMeta,
-} from "@/lib/metadata";
-import cryptpadMarkUrl from "./assets/cryptpad-mark.svg";
+  createRootRoute,
+  createRoute,
+  createRouter,
+  Outlet,
+  RouterProvider,
+} from "@tanstack/react-router";
 
-import "./index.css";
+import { HomePage } from "./pages/HomePage";
 
-export interface AppProps {
-  data: CryptPadCardData;
-  meta: CryptPadCardMeta;
+import enLang from "./locales/en.json";
+import fiLang from "./locales/fi.json";
+import svLang from "./locales/sv.json";
+import { MetaData, MetaProvider, CryptPadCardData } from "./lib/metadata";
+
+export const PRODUCT_SHORTNAME = "cryptpad";
+
+function RootLayoutComponent() {
+  return (
+    <div className="max-w-5xl mx-auto p-6">
+      <Outlet />
+    </div>
+  );
 }
 
-export default function App({ data, meta }: AppProps) {
-  const card = buildCardDetails(meta);
-  const loginUrl = buildLoginUrl(data.url);
+interface Props {
+  data: CryptPadCardData;
+  meta: MetaData;
+}
+
+export default function CryptPadApp({ data, meta }: Props) {
+  const [ready, setReady] = useState(false);
+  const { i18n } = useTranslation(PRODUCT_SHORTNAME);
+
+  const rootRoute = useMemo(
+    () =>
+      createRootRoute({
+        component: RootLayoutComponent,
+      }),
+    [],
+  );
+
+  const homeRoute = useMemo(
+    () =>
+      createRoute({
+        getParentRoute: () => rootRoute,
+        path: "/",
+        component: () => <HomePage data={data} />,
+      }),
+    [rootRoute, data],
+  );
+
+  const routeTree = useMemo(
+    () => rootRoute.addChildren([homeRoute]),
+    [rootRoute, homeRoute],
+  );
+
+  const router = useMemo(
+    () => createRouter({ routeTree, basepath: "/product/cryptpad" }),
+    [routeTree],
+  );
+
+  useEffect(() => {
+    async function load() {
+      i18n.addResourceBundle("en", PRODUCT_SHORTNAME, enLang);
+      i18n.addResourceBundle("fi", PRODUCT_SHORTNAME, fiLang);
+      i18n.addResourceBundle("sv", PRODUCT_SHORTNAME, svLang);
+
+      await i18n.loadNamespaces(PRODUCT_SHORTNAME);
+      setReady(true);
+    }
+
+    void load();
+  }, [i18n]);
+
+  if (!ready) return null;
 
   return (
-    <main className={`cryptpad-shell theme-${card.theme}`} data-theme={card.theme}>
-      <section className="cryptpad-card" aria-labelledby="cryptpad-card-title">
-        <header className="cryptpad-card__header">
-          <img
-            className="cryptpad-card__mark"
-            src={cryptpadMarkUrl}
-            alt=""
-            aria-hidden="true"
-          />
-          <div className="cryptpad-card__brand">
-            <p className="cryptpad-card__eyebrow">Federated workspace</p>
-            <h1 id="cryptpad-card-title">CryptPad</h1>
-          </div>
-        </header>
-
-        <p className="cryptpad-card__lead">
-          Secure collaborative documents for certificate-backed Deploy App users.
-        </p>
-
-        <dl className="cryptpad-card__details">
-          <div>
-            <dt>Signed in as</dt>
-            <dd>{card.callsign}</dd>
-          </div>
-          <div>
-            <dt>Sandbox origin</dt>
-            <dd>{data.sandbox_url}</dd>
-          </div>
-        </dl>
-
-        <div className="cryptpad-card__actions">
-          <a className="cryptpad-card__button" href={loginUrl}>
-            Open CryptPad
-          </a>
-        </div>
-      </section>
-    </main>
+    <MetaProvider meta={meta}>
+      <RouterProvider router={router} />
+    </MetaProvider>
   );
 }

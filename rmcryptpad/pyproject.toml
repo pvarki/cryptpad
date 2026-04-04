@@ -26,6 +26,16 @@ pytest = "^8.0"
 pytest-asyncio = ">=1.2,<2.0"
 pytest-docker = "^3.2"
 
+[tool.pylint.messages_control]
+disable = ["fixme", "W1202", "C0209", "E0402"]
+
+[tool.pylint.design]
+max-args = 10
+
+[tool.pylint.similarities]
+min-similarity-lines = 8
+ignore-imports = true
+
 [build-system]
 requires = ["poetry-core>=2.1.0"]
 build-backend = "poetry.core.masonry.api"

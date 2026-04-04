@@ -2,13 +2,8 @@
 
 from __future__ import annotations
 
-import datetime
-
 import pytest
-from cryptography import x509
-from cryptography.hazmat.primitives import hashes, serialization
-from cryptography.hazmat.primitives.asymmetric import rsa
-from cryptography.x509.oid import NameOID
+from conftest import make_user_payload, rm_headers
 from fastapi.testclient import TestClient
 
 from rmcryptpad.db.errors import Deleted
@@ -16,37 +11,16 @@ from rmcryptpad.db.user import User
 from rmcryptpad.web.application import get_app_no_init
 
 
-def _rm_headers() -> dict[str, str]:
-    return {"X-ClientCert-DN": "CN=rasenmaeher,O=RM", "X-SSL-Client-Verify": "SUCCESS"}
-
-
-def _user_payload(callsign: str) -> dict[str, str]:
-    key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
-    subject = issuer = x509.Name([x509.NameAttribute(NameOID.COMMON_NAME, callsign)])
-    cert = (
-        x509.CertificateBuilder()
-        .subject_name(subject)
-        .issuer_name(issuer)
-        .public_key(key.public_key())
-        .serial_number(x509.random_serial_number())
-        .not_valid_before(datetime.datetime.now(datetime.UTC) - datetime.timedelta(days=1))
-        .not_valid_after(datetime.datetime.now(datetime.UTC) + datetime.timedelta(days=30))
-        .sign(key, hashes.SHA256())
-    )
-    return {
-        "uuid": f"uuid-{callsign}",
-        "callsign": callsign,
-        "x509cert": cert.public_bytes(serialization.Encoding.PEM).decode("utf-8"),
-    }
-
-
 def test_client_data_routes_return_settings_urls(dbinstance: None) -> None:
+    """Verify both client data endpoints return correct CryptPad URLs."""
     _ = dbinstance
     app = get_app_no_init()
 
     with TestClient(app) as client:
         for path in ("/api/v2/clients/data", "/api/v2/admin/clients/data"):
-            response = client.post(path, headers=_rm_headers(), json=_user_payload("VIRTA-1"))
+            response = client.post(
+                path, headers=rm_headers(), json=make_user_payload("VIRTA-1")
+            )
             assert response.status_code == 200
             payload = response.json()["data"]
             assert payload["url"] == "https://cryptpad.localhost:8443"
@@ -56,25 +30,28 @@ def test_client_data_routes_return_settings_urls(dbinstance: None) -> None:
 
 
 @pytest.mark.asyncio
-async def test_revoked_user_stays_revoked_after_client_data_access(dbinstance: None) -> None:
+async def test_revoked_user_stays_revoked_after_client_data_access(
+    dbinstance: None,
+) -> None:
+    """Ensure accessing client data does not re-enable a revoked user."""
     _ = dbinstance
     app = get_app_no_init()
 
     with TestClient(app) as client:
         client.post(
             "/api/v1/users/created",
-            headers=_rm_headers(),
-            json=_user_payload("VIRTA-REVOKED"),
+            headers=rm_headers(),
+            json=make_user_payload("VIRTA-REVOKED"),
         )
         client.post(
             "/api/v1/users/revoked",
-            headers=_rm_headers(),
-            json=_user_payload("VIRTA-REVOKED"),
+            headers=rm_headers(),
+            json=make_user_payload("VIRTA-REVOKED"),
         )
         response = client.post(
             "/api/v2/clients/data",
-            headers=_rm_headers(),
-            json=_user_payload("VIRTA-REVOKED"),
+            headers=rm_headers(),
+            json=make_user_payload("VIRTA-REVOKED"),
         )
         assert response.status_code == 200
 

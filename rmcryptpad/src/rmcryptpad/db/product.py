@@ -56,4 +56,3 @@ class Product(ORMBaseModel, table=True):
             session.commit()
             session.refresh(obj)
         return obj
-
