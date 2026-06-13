@@ -12,7 +12,7 @@ RUN npm install -g pnpm@10 \
 COPY rmcryptpad/ui/ ./
 RUN pnpm build
 
-FROM ${PYTHON_IMAGE}
+FROM ${PYTHON_IMAGE} AS runtime
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1
