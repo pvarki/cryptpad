@@ -33,9 +33,13 @@ jobs:
       - uses: pvarki/config-ci-library/.github/actions/setup-python@main
         with:
           python-version: "3.14"
+      - name: Install deps
+        run: |
+          cd rmcryptpad
+          poetry install
       - name: Do pre-commit checks
         run: |
-          uv run prek run --all-files
+          uvx prek run --all-files
 
   test-rmcryptpad-backend:
     runs-on: ubuntu-latest
