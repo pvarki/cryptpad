@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "rmcryptpad"
-version = "0.1.0"
+version = "1.0.0+260614"
 description = "Deploy App integration layer for CryptPad"
 authors = ["ElderX <elderx@example.com>"]
 readme = "README.md"
