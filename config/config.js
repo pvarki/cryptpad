@@ -24,4 +24,3 @@ module.exports = {
   logToStdout: true,
   installMethod: 'docker',
 };
-

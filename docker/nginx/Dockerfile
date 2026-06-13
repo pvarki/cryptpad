@@ -12,4 +12,3 @@ RUN chmod 0755 /usr/local/bin/nginx-entrypoint.sh /usr/local/bin/generate-local-
 
 ENTRYPOINT ["/usr/local/bin/nginx-entrypoint.sh"]
 CMD ["nginx", "-g", "daemon off;"]
-

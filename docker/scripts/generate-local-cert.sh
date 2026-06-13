@@ -6,6 +6,7 @@ CERT_FILE="${CERT_DIR}/cryptpad.local.pem"
 KEY_FILE="${CERT_DIR}/cryptpad.local-key.pem"
 MAIN_HOST="${CRYPTPAD_MAIN_HOST:-cryptpad.localhost}"
 SANDBOX_HOST="${CRYPTPAD_SANDBOX_HOST:-sandbox.cryptpad.localhost}"
+RM_HOST="${CRYPTPAD_RM_HOST:-rmcryptpad.localhost}"
 
 mkdir -p "$CERT_DIR"
 
@@ -32,6 +33,7 @@ extendedKeyUsage = serverAuth
 [alt_names]
 DNS.1 = ${MAIN_HOST}
 DNS.2 = ${SANDBOX_HOST}
+DNS.3 = ${RM_HOST}
 EOF
 
 openssl req \
@@ -45,4 +47,3 @@ openssl req \
   -config /tmp/openssl.cnf
 
 chmod 0644 "$CERT_FILE"
-
