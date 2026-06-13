@@ -107,7 +107,7 @@ jobs:
     name: Publish cryptpad itself
     needs:
       [
-        "version-check",
+        "version-check-cryptpad",
         "pre-commit",
         "standalone-compose-smoke",
         "test-cryptpad-image",
@@ -140,7 +140,7 @@ jobs:
     name: Publish cryptpad RM integration
     needs:
       [
-        "version-check",
+        "version-check-rmcryptpad",
         "pre-commit",
         "test-rmcryptpad-backend",
         "test-rmcryptpad-ui",
