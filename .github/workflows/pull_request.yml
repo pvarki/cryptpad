@@ -36,12 +36,13 @@ jobs:
           python-version: 3.14
       - name: Install deps
         run: |
-          pip install uv poetry
+          pip install prek poetry
           cd rmcryptpad
           poetry install
       - name: Do pre-commit checks
         run: |
-          uvx prek run --all-files
+          cd rmcryptpad
+          poetry run prek run --all-files
 
   test-rmcryptpad-backend:
     runs-on: ubuntu-latest
