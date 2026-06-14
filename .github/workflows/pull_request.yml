@@ -116,8 +116,8 @@ jobs:
           product: cryptpad
           component: server
           target: runtime
-          context: './docker/cryptpad'
-          version_context: './docker/cryptpad'
+          context: './docker/cryptpad/'
+          version_context: './docker/cryptpad/'
           dockerhub-username: ${{ vars.DOCKERHUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -151,8 +151,8 @@ jobs:
           product: cryptpad
           component: integration
           target: runtime
-          context: './rmcryptpad'
-          version_context: './rmcryptpad'
+          context: './rmcryptpad/'
+          version_context: './rmcryptpad/'
           dockerhub-username: ${{ vars.DOCKERHUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
