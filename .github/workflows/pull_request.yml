@@ -87,7 +87,7 @@ jobs:
         run: sh tests/test_cryptpad_image.sh
 
   standalone-compose-smoke:
-    runs-on: arc-runner-set
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
       - name: Run standalone compose smoke test
