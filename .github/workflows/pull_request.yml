@@ -10,7 +10,7 @@ jobs:
       - uses: actions/checkout@v6
       - uses: pvarki/config-ci-library/.github/actions/validate-bumpversion@main
         with:
-          version_context: "./docker/cryptpad"
+          version_context: "./docker/cryptpad/"
 
   version-check-rmcryptpad:
     name: Check integrationapi version increment
@@ -19,7 +19,7 @@ jobs:
       - uses: actions/checkout@v6
       - uses: pvarki/config-ci-library/.github/actions/validate-bumpversion@main
         with:
-          version_context: "./rmcryptpad"
+          version_context: "./rmcryptpad/"
 
   pre-commit:
     name: Run pre-commit checks
