@@ -30,11 +30,13 @@ jobs:
       checks: write
     steps:
       - uses: actions/checkout@v6
-      - uses: pvarki/config-ci-library/.github/actions/setup-python@main
+      - name: Set up Python 3.14
+        uses: actions/setup-python@v6
         with:
-          python-version: "3.14"
+          python-version: 3.14
       - name: Install deps
         run: |
+          pip install uv poetry
           cd rmcryptpad
           poetry install
       - name: Do pre-commit checks
