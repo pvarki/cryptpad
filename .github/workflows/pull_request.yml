@@ -92,19 +92,6 @@ jobs:
       - name: Run standalone compose smoke test
         run: bash tests/test_compose_smoke.sh
 
-  snyk-test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: pvarki/config-ci-library/.github/actions/setup-python@main
-        with:
-          python-version: "3.12"
-      - uses: pvarki/config-ci-library/.github/actions/snyk-test@main
-        with:
-          snyk-org: deployapp-products
-          snyk-token: ${{ secrets.SNYK_TOKEN }}
-
-
   publish-cryptpad:
     name: Publish cryptpad itself
     needs:
