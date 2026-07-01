@@ -60,4 +60,10 @@ if [ ! -f "$CPAD_DECREE_FILE" ] || ! grep -q '"SET_BEARER_SECRET"' "$CPAD_DECREE
   " "$CPAD_DECREE_FILE" "$bearer_secret" "$decree_time"
 fi
 
+# One-shot boolean decrees; appended once, then persisted in the data volume.
+for config in REMOVE_DONATE_BUTTON BLOCK_DAILY_CHECK; do
+  grep -q "\"$config\"" "$CPAD_DECREE_FILE" 2>/dev/null && continue
+  printf '["%s",[true],"INTERNAL",%s]\n' "$config" "$(node -e 'process.stdout.write(String(Date.now()))')" >> "$CPAD_DECREE_FILE"
+done
+
 exec "$@"
