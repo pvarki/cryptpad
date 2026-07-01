@@ -39,8 +39,6 @@ services:
       - ./volumes/cryptpad/block:/cryptpad/block
       - ./volumes/cryptpad/data:/cryptpad/data
       - ./volumes/cryptpad/files:/cryptpad/datastore
-      - ./config/config.js:/cryptpad/config/config.js:ro
-      - ./customize:/cryptpad/customize.local:ro
     expose:
       - "3000"
       - "3003"

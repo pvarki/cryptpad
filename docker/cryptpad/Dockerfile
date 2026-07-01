@@ -40,6 +40,8 @@ WORKDIR /cryptpad
 COPY --from=build --chown=cryptpad:cryptpad /src /cryptpad
 COPY --chown=cryptpad:cryptpad docker/cryptpad/docker-entrypoint.sh /usr/local/bin/cryptpad-entrypoint.sh
 COPY --chown=cryptpad:cryptpad config/sso.js /cryptpad/config/sso.js
+COPY --chown=cryptpad:cryptpad config/config.js /cryptpad/config/config.js
+COPY --chown=cryptpad:cryptpad customize /cryptpad/customize.local
 
 RUN chmod 0755 /usr/local/bin/cryptpad-entrypoint.sh \
     && mkdir -p /cryptpad/blob /cryptpad/block /cryptpad/customize /cryptpad/data /cryptpad/datastore \
