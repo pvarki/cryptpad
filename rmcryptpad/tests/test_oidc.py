@@ -69,6 +69,31 @@ def test_discovery_document_returns_expected_urls(
     assert payload["jwks_uri"].endswith("/oidc/jwks.json")
 
 
+def test_discovery_document_uses_internal_url_for_backchannel(
+    dbinstance: None, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """Verify backchannel endpoints use the internal URL while issuer stays external."""
+    _ = dbinstance
+    _configure_oidc(monkeypatch, tmp_path)
+    monkeypatch.setenv("RMCRYPTPAD_OIDC_INTERNAL_URL", "http://127.0.0.1:8000")
+    RMCryptPadSettings._singleton = None  # pylint: disable=protected-access
+    app = get_app_no_init()
+
+    with TestClient(app) as client:
+        response = client.get("/.well-known/openid-configuration")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["issuer"] == "https://rmcryptpad.localhost:8443"
+    assert (
+        payload["authorization_endpoint"]
+        == "https://rmcryptpad.localhost:8443/oidc/authorize"
+    )
+    assert payload["token_endpoint"] == "http://127.0.0.1:8000/oidc/token"
+    assert payload["userinfo_endpoint"] == "http://127.0.0.1:8000/oidc/userinfo"
+    assert payload["jwks_uri"] == "http://127.0.0.1:8000/oidc/jwks.json"
+
+
 def test_authorize_rejects_missing_or_revoked_active_callsign(
     dbinstance: None, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:

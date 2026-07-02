@@ -1,5 +1,5 @@
 [tool.bumpversion]
-current_version = "1.0.0+260614"
+current_version = "1.0.1+260702"
 parse = "(?P<major>\\d+)\\.(?P<minor>\\d+)\\.(?P<patch>\\d+)\\+(?P<build>\\d+)"
 serialize = ["{major}.{minor}.{patch}+{build}"]
 search = "{current_version}"
@@ -33,3 +33,8 @@ replace = 'version = "{new_version}"'
 filename = "src/rmcryptpad/__init__.py"
 search = '__version__ = "{current_version}"'
 replace = '__version__ = "{new_version}"'
+
+[[tool.bumpversion.files]]
+filename = "tests/test_package.py"
+search = '__version__ == "{current_version}"'
+replace = '__version__ == "{new_version}"'
