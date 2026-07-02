@@ -62,12 +62,15 @@ class OIDCProvider:
 
     def discovery_document(self) -> dict[str, Any]:
         """Return the OpenID Connect discovery document."""
+        backchannel = (
+            self.settings.oidc_internal_url or self.settings.oidc_issuer
+        ).rstrip("/")
         return {
             "issuer": self.issuer,
             "authorization_endpoint": f"{self.issuer}/oidc/authorize",
-            "token_endpoint": f"{self.issuer}/oidc/token",
-            "userinfo_endpoint": f"{self.issuer}/oidc/userinfo",
-            "jwks_uri": f"{self.issuer}/oidc/jwks.json",
+            "token_endpoint": f"{backchannel}/oidc/token",
+            "userinfo_endpoint": f"{backchannel}/oidc/userinfo",
+            "jwks_uri": f"{backchannel}/oidc/jwks.json",
             "response_types_supported": ["code"],
             "subject_types_supported": ["public"],
             "id_token_signing_alg_values_supported": ["RS256"],

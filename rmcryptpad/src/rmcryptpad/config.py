@@ -58,6 +58,10 @@ class RMCryptPadSettings(BaseSettings):
     docs_url: str = "https://docs.cryptpad.org/en/admin_guide/installation.html"
     ui_dir: str = "/opt/ui/cryptpad"
     oidc_issuer: str = "https://rmcryptpad.localhost:8443"
+    oidc_internal_url: Optional[str] = Field(
+        default=None,
+        description="Base URL for server to server OIDC calls, if empty oidc_issuer is used.",
+    )
     oidc_key_dir: str = "/data/oidc"
     oidc_client_id: str = "cryptpad"
     oidc_client_secret: str = "cryptpad-secret"
