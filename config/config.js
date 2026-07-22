@@ -6,6 +6,7 @@ const sandboxOrigin =
 
 module.exports = {
   ...baseConfig,
+  maxWorkers: Number(process.env.CPAD_MAX_WORKERS) || 4,
   httpUnsafeOrigin: mainOrigin,
   httpSafeOrigin: sandboxOrigin,
   httpAddress: '0.0.0.0',
