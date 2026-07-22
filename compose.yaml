@@ -28,6 +28,7 @@ services:
     environment:
       CPAD_MAIN_DOMAIN: ${CPAD_MAIN_DOMAIN:-https://cryptpad.localhost:8443}
       CPAD_SANDBOX_DOMAIN: ${CPAD_SANDBOX_DOMAIN:-https://sandbox.cryptpad.localhost:8443}
+      CPAD_MAX_WORKERS: ${CPAD_MAX_WORKERS:-4}
       CPAD_SSO_NAME: ${CPAD_SSO_NAME:-rmcryptpad}
       CPAD_SSO_ISSUER: ${CPAD_SSO_ISSUER:-https://rmcryptpad.localhost:8443}
       CPAD_SSO_CLIENT_ID: ${CPAD_SSO_CLIENT_ID:-cryptpad}
