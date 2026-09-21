@@ -8,6 +8,8 @@ export interface CryptPadCardData {
 export interface MetaData {
   theme: string;
   callsign: string;
+  autoOpenGuides?: boolean;
+  onDisableGuides?: () => void;
 }
 
 const MetaContext = createContext<MetaData | undefined>(undefined);
