@@ -6,7 +6,7 @@ from rmcryptpad.config import RMCryptPadSettings
 
 def test_version() -> None:
     """Verify the package version string."""
-    assert __version__ == "1.0.1+260722"
+    assert __version__ == "1.0.2+260921"
 
 
 def test_settings_defaults() -> None:
