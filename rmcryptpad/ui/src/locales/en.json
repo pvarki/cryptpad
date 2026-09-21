@@ -177,6 +177,7 @@
         "title": "Why is CryptPad Secure?"
       }
     },
-    "title": "What is CryptPad?"
+    "title": "What is CryptPad?",
+    "disableAutoOpen": "Do not show me guides automatically"
   }
 }

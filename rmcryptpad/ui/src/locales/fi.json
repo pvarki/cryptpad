@@ -177,6 +177,7 @@
         "title": "Miksi Cryptpad on turvallinen?"
       }
     },
-    "title": "Mikä on CryptPad?"
+    "title": "Mikä on CryptPad?",
+    "disableAutoOpen": "Älä näytä minulle ohjeita automaattisesti"
   }
 }

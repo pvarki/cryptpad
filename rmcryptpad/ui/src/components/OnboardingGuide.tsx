@@ -3,7 +3,13 @@ import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { PRODUCT_SHORTNAME } from "@/App";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, ChevronLeft, ImageOff, Info } from "lucide-react";
+import {
+  ChevronRight,
+  ChevronLeft,
+  ImageOff,
+  Info,
+  EyeOff,
+} from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
@@ -164,7 +170,8 @@ export function OnboardingGuide() {
       `${deploymentHash}-cryptpad-onboarding-steps-${meta.callsign}`,
     );
 
-    if (!seenOnboarding) {
+    // The info button still opens this; only the uninvited appearance stops.
+    if (meta.autoOpenGuides !== false && !seenOnboarding) {
       setOpen(true);
     }
 
@@ -184,7 +191,7 @@ export function OnboardingGuide() {
         setCanReview(true);
       }
     }
-  }, [meta.callsign, deployment, relevantSteps]);
+  }, [meta.callsign, deployment, relevantSteps, meta.autoOpenGuides]);
 
   useEffect(() => {
     if (
@@ -396,6 +403,20 @@ export function OnboardingGuide() {
           <ChevronRight className="w-4 h-4 ml-2" />
         </Button>
       </div>
+
+      {currentStep === 0 && (
+        <button
+          type="button"
+          onClick={() => {
+            meta.onDisableGuides?.();
+            handleOpenChange(false);
+          }}
+          className="flex w-full items-center gap-2 px-4 pb-3 text-left text-xs text-muted-foreground hover:text-foreground"
+        >
+          <EyeOff className="h-3.5 w-3.5 shrink-0" />
+          {t("onboarding.disableAutoOpen")}
+        </button>
+      )}
 
       <div className="h-1.5 w-full bg-muted shrink-0">
         <div
