@@ -19,7 +19,6 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.x509.oid import NameOID
 from pytest_docker.plugin import Services
 
-
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "src"
 

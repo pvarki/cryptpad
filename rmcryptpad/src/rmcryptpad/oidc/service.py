@@ -219,7 +219,7 @@ class OIDCProvider:
         return {
             "access_token": access_token,
             "id_token": id_token,
-            "token_type": "Bearer",
+            "token_type": "Bearer",  # nosec B105: OAuth token type, not a password
             "expires_in": self.settings.oidc_token_ttl_seconds,
             "scope": code_row.scope,
         }

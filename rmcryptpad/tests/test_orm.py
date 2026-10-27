@@ -26,6 +26,8 @@ async def test_callsign_is_identity(dbinstance: None) -> None:
         rmuuid="uuid-a",
         cert_pem=first_cert,
     )
+    assert isinstance(created.created, datetime.datetime)
+    assert isinstance(created.updated, datetime.datetime)
 
     refreshed = await User.create_or_update(
         callsign="VIRTA-1",
@@ -34,6 +36,7 @@ async def test_callsign_is_identity(dbinstance: None) -> None:
     )
 
     assert created.pk == refreshed.pk
+    assert created.created == refreshed.created
     assert refreshed.cert_pem == second_cert
 
 
