@@ -84,8 +84,8 @@ const getOnboardingImage = (
   const imagePath = forceDesktop
     ? step.image
     : isMobile && step.mobileImage
-    ? step.mobileImage
-    : step.image;
+      ? step.mobileImage
+      : step.image;
 
   return imagePath;
 };
